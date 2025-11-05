@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orion Fitness - E-commerce</title>
+    
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Carrega a fonte Inter (Limpa e Moderna) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Carrega Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <style>
+        /* Define a fonte Inter como padrão */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* ATUALIZAÇÃO: Fundo mais claro (gray-50) para sensação de leveza */
+            background-color: #f9fafb; 
+            color: #333; /* Cor de texto principal (#333) */
+        }
+        
+        /* Classe 'hidden' que o JS usará para esconder páginas */
+        .page-content.hidden {
+            display: none;
+        }
+
+        /* Estilo para inputs de formulário (Padrão 'Clean') */
+        .form-input {
+            /* ATUALIZAÇÃO UX/UI: 
+              - Inputs com borda sutil, cantos arredondados e foco no vermelho escuro.
+            */
+            @apply mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2.5 px-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:border-red-700;
+        }
+        
+        /* NOVO: Estilo para as abas de pagamento selecionadas */
+        .payment-tab-selected {
+            @apply bg-red-50 border-red-700 text-red-700;
+        }
+
+        /* REMOÇÃO: 
+          - O CSS do botão flutuante global foi removido.
+          - O CSS do carrossel antigo foi removido.
+        */
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- 
+      ATUALIZAÇÃO ESTRUTURAL: Cabeçalho
+      - Aplicado 'sticky top-0 z-50' para fixar no topo.
+      - Efeito de transparência 'bg-white/90 backdrop-blur-md' para visual moderno.
+      - Sombra e borda sutis 'shadow-sm border-b border-gray-200'.
+    -->
+    <div class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        
+        <!-- Barra de Promoção (Estilo 'Clean') -->
+        <div class="bg-red-700 text-white text-center py-2 text-sm font-medium hidden sm:block">
+            <!-- ATUALIZAÇÃO: Cor de destaque #B91C1C (red-700) -->
+            ✨ 10% OFF na primeira compra via PIX!
+        </div>
+
+        <!-- CABEÇALHO E NAVEGAÇÃO -->
+        <header class="text-gray-800">
+            
+            <!-- Header Principal (Logo, Busca, Ícones) -->
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16 md:h-20">
+                    
+                    <!-- Botão Menu Mobile (NOVO) -->
+                    <div class="flex-1 flex justify-start items-center md:hidden">
+                        <button id="mobile-menu-btn" class="text-gray-700 hover:text-red-700 p-2 rounded-md">
+                            <ion-icon name="menu-outline" class="h-7 w-7"></ion-icon>
+                        </button>
+                    </div>
+
+                    <!-- Logo (Centro no Mobile, Esquerda no Desktop) -->
+                    <div class="flex-1 flex justify-center items-center md:justify-start">
+                        <span class="text-2xl font-bold text-gray-900 cursor-pointer" onclick="showPage('page-home')">
+                            <!-- Logo Placeholder (mantido) -->
+                            <img src="https://i.postimg.cc/nz8Dp1Q7/Design-sem-nome-2025-11-05T014752-727.png" 
+                                 alt="Orion Fitness Logo" 
+                                 class="h-8 md:h-10 w-auto rounded-sm"
+                                 loading="lazy">
+                        </span>
+                    </div>
+                    
+                    <!-- Barra de Busca (Centro Desktop) -->
+                    <div class="hidden md:flex flex-grow flex-shrink-0 justify-center px-4 lg:px-12">
+                        <div class="relative w-full max-w-lg">
+                            <!-- ATUALIZAÇÃO: Estilo do input 'clean' -->
+                            <input type="text" placeholder="Digite o que você procura..." class="w-full bg-gray-50 border border-gray-300 rounded-md py-2.5 px-5 pr-12 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:border-transparent">
+                            <button class="absolute right-0 top-0 h-full px-4 text-gray-500 hover:text-red-700" aria-label="Buscar">
+                                <ion-icon name="search-outline" class="h-5 w-5"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Ícones (Direita) -->
+                    <div class="flex-1 flex justify-end items-center space-x-3 md:space-x-5">
+                        
+                        <!-- Login -->
+                        <a onclick="showPage('page-login')" class="hidden sm:flex items-center text-gray-700 hover:text-red-700 cursor-pointer">
+                            <ion-icon name="person-outline" class="h-6 w-6"></ion-icon>
+                            <span class="hidden lg:block ml-2 text-sm font-medium">Login</span>
+                        </a>
+                        
+                        <!-- Carrinho -->
+                        <a onclick="showPage('page-cart')" class="cursor-pointer text-gray-700 hover:text-red-700 relative">
+                            <span class="sr-only">Carrinho</span>
+                            <ion-icon name="cart-outline" class="h-6 w-6"></ion-icon>
+                            <!-- ATUALIZAÇÃO: Contador com a nova cor (red-700) -->
+                            <span id="cart-count" class="absolute -top-2 -right-2 bg-red-700 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nav de Categorias (Desktop) -->
+            <nav class="border-t border-gray-200 hidden md:flex">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-12">
+                    <!-- Links (Esquerda) -->
+                    <div class="flex space-x-8">
+                         <a onclick="showPage('page-home')" class="cursor-pointer text-gray-700 hover:text-red-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Início</a>
+                        <a onclick="showProductPage()" class="cursor-pointer text-gray-700 hover:text-red-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Catálogo</a>
+                        <a onclick="showProductPage('suplementos')" class="cursor-pointer text-gray-700 hover:text-red-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Suplementos</a>
+                        <a onclick="showProductPage('acessorios')" class="cursor-pointer text-gray-700 hover:text-red-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Acessórios</a>
+                        <a onclick="showPage('page-contact')" class="cursor-pointer text-gray-700 hover:text-red-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Contato</a>
+                    </div>
+                    
+                    <!-- Botão Ofertas (Direita) -->
+                    <a onclick="event.preventDefault(); openOffersModal();" class="cursor-pointer bg-red-700 hover:bg-red-800 text-white font-semibold py-1.5 px-4 rounded-md text-sm transition-colors duration-300 flex items-center gap-1.5">
+                        <ion-icon name="flame-outline"></ion-icon>
+                        Ofertas Especiais
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Menu Mobile (NOVO / Oculto por padrão) -->
+            <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200">
+                <div class="container mx-auto px-4 py-4 space-y-4">
+                     <!-- Busca Mobile -->
+                    <div class="relative w-full">
+                        <input type="text" placeholder="O que você procura?" class="w-full bg-gray-50 border border-gray-300 rounded-md py-2.5 px-5 pr-12 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-700 focus:border-transparent">
+                        <button class="absolute right-0 top-0 h-full px-4 text-gray-500 hover:text-red-700" aria-label="Buscar">
+                            <ion-icon name="search-outline" class="h-5 w-5"></ion-icon>
+                        </button>
+                    </div>
+                    <!-- Links Mobile -->
+                    <a onclick="showPage('page-home')" class="block py-2 text-base font-medium text-gray-700 hover:text-red-700">Início</a>
+                    <a onclick="showProductPage()" class="block py-2 text-base font-medium text-gray-700 hover:text-red-700">Catálogo</a>
+                    <a onclick="showProductPage('suplementos')" class="block py-2 text-base font-medium text-gray-700 hover:text-red-700">Suplementos</a>
+                    <a onclick="showProductPage('acessorios')" class="block py-2 text-base font-medium text-gray-700 hover:text-red-700">Acessórios</a>
+                    <a onclick="showPage('page-contact')" class="block py-2 text-base font-medium text-gray-700 hover:text-red-700">Contato</a>
+                    <a onclick="showPage('page-login')" class="block py-2 text-base font-medium text-gray-700 hover:text-red-700">Minha Conta</a>
+                </div>
+            </div>
+
+        </header>
+    </div> <!-- Fim do Wrapper Sticky -->
+
+
+    <!-- 
+      ATUALIZAÇÃO ESTRUTURAL: Conteúdo Principal
+      - Adicionado 'bg-white' e 'shadow-sm' ao container principal para criar o "miolo"
+        claro, separado do fundo 'bg-gray-50'.
+      - Ajustado espaçamento (py-8).
+    -->
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 mt-6 bg-white rounded-lg shadow-sm">
+
+        <!-- ===== PÁGINA: HOME (✅) ===== -->
+        <div id="page-home" class="page-content">
+            
+            <!-- 
+              ATUALIZAÇÃO ESTRUTURAL: Seção Hero
+              - O Carrossel JS foi substituído por uma grade de banners estáticos.
+              - Este layout é mais moderno, leve e fácil para você atualizar as imagens.
+              - Adicionados comentários 'TODO:' para inserção dos banners.
+            -->
+            <section id="hero-section" class="mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    
+                    <!-- Banner Principal -->
+                    <!-- ATUALIZAÇÃO: Removido o texto e o botão. O banner agora é um link. -->
+                    <a onclick="showProductPage()" class="cursor-pointer relative md:col-span-2 bg-gray-800 rounded-lg shadow-lg overflow-hidden h-72 md:h-96 group">
+                        <!-- TODO: inserir imagem do banner principal aqui -->
+                        <img src="https://i.postimg.cc/NMfwy3X3/05-Post-Blog-iloveimg-compressed-1.png" alt="Banner Principal" class="absolute inset-0 w-full h-full object-cover opacity-70 transition-transform duration-300 group-hover:scale-105" loading="lazy">
+                        
+                    </a>
+                    
+                    <!-- Banner Secundário 1 -->
+                    <!-- ATUALIZAÇÃO: Removido o texto. O banner agora é um link. -->
+                    <a onclick="showProductPage('suplementos')" class="cursor-pointer relative bg-gray-700 rounded-lg shadow-lg overflow-hidden h-56 md:h-64 group">
+                        <!-- TODO: inserir imagem do banner de suplementos -->
+                        <img src="https://i.postimg.cc/mDZT1949/c4.png" alt="Suplementos" class="absolute inset-0 w-full h-full object-cover opacity-80 transition-transform duration-300 group-hover:scale-105" loading="lazy">
+                    </a>
+                    
+                    <!-- Banner Secundário 2 -->
+                    <!-- ATUALIZAÇÃO: Removido o texto. O banner agora é um link. -->
+                    <a onclick="showProductPage('acessorios')" class="cursor-pointer relative bg-gray-700 rounded-lg shadow-lg overflow-hidden h-56 md:h-64 group">
+                         <!-- TODO: inserir imagem do banner de acessórios -->
+                        <img src="https://i.postimg.cc/HxTPp4mY/joao.png" alt="Acessórios" class="absolute inset-0 w-full h-full object-cover opacity-80 transition-transform duration-300 group-hover:scale-105" loading="lazy">
+                    </a>
+                </div>
+            </section>
+
+            <!-- 
+              ATUALIZAÇÃO UX/UI: Seção de Benefícios
+              - Layout 'clean' mantido, agora sem sombra, usando borda sutil.
+              - Ícones e cores atualizados.
+            -->
+            <section id="benefits-bar" class="bg-gray-50 rounded-lg border border-gray-200 py-4 mb-12">
+                <div class="flex flex-wrap justify-around items-center text-gray-700 text-sm md:text-base">
+                    <div class="flex items-center space-x-2 p-2">
+                        <ion-icon name="earth-outline" class="text-red-700 text-xl"></ion-icon>
+                        <span>Entregamos em todo o Brasil</span>
+                    </div>
+                    <div class="flex items-center space-x-2 p-2">
+                        <ion-icon name="card-outline" class="text-red-700 text-xl"></ion-icon>
+                        <span>Parcelamento em até 12x</span>
+                    </div>
+                    <div class="flex items-center space-x-2 p-2">
+                        <ion-icon name="car-sport-outline" class="text-red-700 text-xl"></ion-icon>
+                        <span>Frete grátis acima de R$ 150</span>
+                    </div>
+                    <div class="flex items-center space-x-2 p-2">
+                        <ion-icon name="shield-checkmark-outline" class="text-red-700 text-xl"></ion-icon>
+                        <span>Compra 100% Segura</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção de Tópicos de Categoria (Mantida, Estilo 'Clean') -->
+            <section id="topic-categories" class="mb-12">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Navegue por Categoria</h2>
+                <div class="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-4 gap-y-8">
+                    
+                    <!-- Item Categoria 1: Whey -->
+                    <a onclick="showProductPage('suplementos')" class="flex flex-col items-center text-center cursor-pointer group">
+                        <div class="p-0.5 rounded-full bg-white border-2 border-gray-200 transition-all duration-300 group-hover:scale-105 group-hover:border-red-700">
+                            <div class="bg-white p-1 rounded-full shadow-sm">
+                                <img src="https://i.postimg.cc/3J7GwS08/dasd.png" alt="Whey Protein" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full" loading="lazy">
+                            </div>
+                        </div>
+                        <span class="mt-3 text-sm font-semibold text-gray-900">Whey Protein</span>
+                    </a>
+                    
+                    <!-- Item Categoria 2: Creatina -->
+                    <a onclick="showProductPage('suplementos')" class="flex flex-col items-center text-center cursor-pointer group">
+                        <div class="p-0.5 rounded-full bg-white border-2 border-gray-200 transition-all duration-300 group-hover:scale-105 group-hover:border-red-700">
+                            <div class="bg-white p-1 rounded-full shadow-sm">
+                                <img src="https://i.postimg.cc/tJR9KxJv/fsa.png" alt="Creatina" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full" loading="lazy">
+                            </div>
+                        </div>
+                        <span class="mt-3 text-sm font-semibold text-gray-900">Creatina</span>
+                    </a>
+                    
+                    <!-- Item Categoria 3: Pré-Treino -->
+                    <a onclick="showProductPage('suplementos')" class="flex flex-col items-center text-center cursor-pointer group">
+                        <div class="p-0.5 rounded-full bg-white border-2 border-gray-200 transition-all duration-300 group-hover:scale-105 group-hover:border-red-700">
+                            <div class="bg-white p-1 rounded-full shadow-sm">
+                                <img src="https://i.postimg.cc/X7ZRp8Rq/pretreino.png" alt="Pré-Treino" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full" loading="lazy">
+                            </div>
+                        </div>
+                        <span class="mt-3 text-sm font-semibold text-gray-900">Pré-Treino</span>
+                    </a>
+
+                    <!-- Item Categoria 4: Roupas -->
+                    <a onclick="showProductPage('roupas')" class="flex flex-col items-center text-center cursor-pointer group">
+                        <div class="p-0.5 rounded-full bg-white border-2 border-gray-200 transition-all duration-300 group-hover:scale-105 group-hover:border-red-700">
+                            <div class="bg-white p-1 rounded-full shadow-sm">
+                                <img src="https://i.postimg.cc/htNyNRv6/roupa-icone.png" alt="Roupas" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full" loading="lazy">
+                            </div>
+                        </div>
+                        <span class="mt-3 text-sm font-semibold text-gray-900">Roupas</span>
+                    </a>
+                    
+                    <!-- Item Categoria 5: Luvas -->
+                    <a onclick="showProductPage('acessorios')" class="flex flex-col items-center text-center cursor-pointer group">
+                        <div class="p-0.5 rounded-full bg-white border-2 border-gray-200 transition-all duration-300 group-hover:scale-105 group-hover:border-red-700">
+                            <div class="bg-white p-1 rounded-full shadow-sm">
+                                <img src="https://i.postimg.cc/RVkwBS18/luvas-academia.png" alt="Luvas" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full" loading="lazy">
+                            </div>
+                        </div>
+                        <span class="mt-3 text-sm font-semibold text-gray-900">Luvas</span>
+                    </a>
+                    
+                    <!-- Item Categoria 6: Shakers -->
+                    <a onclick="showProductPage('acessorios')" class="flex flex-col items-center text-center cursor-pointer group">
+                        <div class="p-0.5 rounded-full bg-white border-2 border-gray-200 transition-all duration-300 group-hover:scale-105 group-hover:border-red-700">
+                            <div class="bg-white p-1 rounded-full shadow-sm">
+                                <img src="https://i.postimg.cc/brbkG4p0/shake.png" alt="Shakers" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full" loading="lazy">
+                            </div>
+                        </div>
+                        <span class="mt-3 text-sm font-semibold text-gray-900">Shakers</span>
+                    </a>
+
+                    <!-- Item Categoria 7: Vitaminas -->
+                    <a onclick="showProductPage('suplementos')" class="flex flex-col items-center text-center cursor-pointer group">
+                        <div class="p-0.5 rounded-full bg-white border-2 border-gray-200 transition-all duration-300 group-hover:scale-105 group-hover:border-red-700">
+                            <div class="bg-white p-1 rounded-full shadow-sm">
+                                <img src="https://i.postimg.cc/90GwXTYb/vitaminas.png" alt="Vitaminas" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full" loading="lazy">
+                            </div>
+                        </div>
+                        <span class="mt-3 text-sm font-semibold text-gray-900">Vitaminas</span>
+                    </a>
+
+                    <!-- Item Categoria 8: Barrinhas -->
+                    <a onclick="showProductPage('suplementos')" class="flex flex-col items-center text-center cursor-pointer group">
+                        <div class="p-0.5 rounded-full bg-white border-2 border-gray-200 transition-all duration-300 group-hover:scale-105 group-hover:border-red-700">
+                            <div class="bg-white p-1 rounded-full shadow-sm">
+                                <img src="https://i.postimg.cc/mgrkJKJC/barrinhas.png" alt="Barrinhas" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full" loading="lazy">
+                            </div>
+                        </div>
+                        <span class="mt-3 text-sm font-semibold text-gray-900">Barrinhas</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Seção de Banners de Categoria (Removida para um layout mais 'clean') -->
+            <!-- <section id="category-banners" class="mb-12"> ... </section> -->
+
+            <!-- Seção de Produtos em Destaque -->
+            <section>
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Nossos Produtos Mais Vendidos</h2>
+                <!-- ATUALIZAÇÃO: A grade de produtos agora será renderizada pelo JS com o novo design -->
+                <div id="featured-products-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    <!-- Produtos em destaque serão inseridos aqui pelo JS -->
+                </div>
+            </section>
+
+            <!-- Seção: Lançamentos -->
+            <section class="mt-12">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Lançamentos</h2>
+                <div id="new-releases-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    <!-- Lançamentos serão inseridos aqui pelo JS -->
+                </div>
+            </section>
+
+            <!-- Seção: Mapa de Localização -->
+            <section id="location-map" class="mt-12">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Nossa Localização</h2>
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden p-1.5">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2448.866251442529!2d-47.14759!3d-22.89139!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94c90f8c24c4d5b9%3A0xb999e2e4d0d2652e!2sR.%20Teodoro%20Guedes%20de%20Campos%2C%20262%20-%20Parque%20Santa%20B%C3%A1rbara%2C%20Campinas%20-%20SP%2C%2013064-590!5e0!3m2!1spt-BR!2sbr!4v0000000000000" 
+                        width="100%" 
+                        height="450" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        class="rounded-md w-full">
+                    </iframe>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===== PÁGINA: LISTAGEM DE PRODUTOS (✅) ===== -->
+        <div id="page-products" class="page-content hidden">
+            <h1 id="product-page-title" class="text-3xl font-bold mb-8 text-gray-900">Catálogo de Produtos</h1>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
+                <div class="relative w-full sm:w-1/2">
+                    <input type="text" placeholder="Buscar produtos..." class="form-input pl-10">
+                    <ion-icon name="search-outline" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg"></ion-icon>
+                </div>
+                <button class="bg-red-700 hover:bg-red-800 text-white font-semibold py-2.5 px-5 rounded-md transition-colors duration-300 flex items-center gap-2 w-full sm:w-auto">
+                    <ion-icon name="filter-outline"></ion-icon>
+                    <span>Filtros</span>
+                </button>
+            </div>
+
+            <!-- ATUALIZAÇÃO: A grade de produtos agora será renderizada pelo JS com o novo design -->
+            <div id="product-list-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <!-- Produtos serão inseridos aqui pelo JS -->
+            </div>
+        </div>
+
+        <!-- ===== PÁGINA: DETALHES DO PRODUTO ===== -->
+        <div id="page-details" class="page-content hidden">
+            <button onclick="showProductPage(currentCategoryFilter)" class="mb-6 text-red-700 hover:text-red-800 font-medium flex items-center gap-2">
+                <ion-icon name="chevron-back-outline"></ion-icon>
+                Voltar aos produtos
+            </button>
+            <div id="product-detail-content" class="grid grid-cols-1 md:grid-cols-2 gap-10 bg-white p-6 md:p-8 rounded-lg">
+                <!-- Detalhes do produto serão inseridos aqui pelo JS -->
+            </div>
+        </div>
+
+        <!-- ===== PÁGINA: CARRINHO (✅) ===== -->
+        <!-- ATUALIZAÇÃO: HTML da 'page-cart' modificado para incluir Desconto Progressivo e Cross-sell -->
+        <div id="page-cart" class="page-content hidden">
+            <h1 class="text-3xl font-bold mb-8 text-gray-900">Seu Carrinho</h1>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Coluna de Itens -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <!-- Container principal dos itens -->
+                        <div id="cart-items-container">
+                            <!-- Itens do carrinho serão inseridos aqui -->
+                        </div>
+                    </div>
+
+                    <!-- NOVO: Seção "Leve Junto" (Cross-sell) -->
+                    <div class="mt-8">
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-900">Aproveite e leve também:</h2>
+                        <div id="cart-cross-sell-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+                            <!-- Itens de cross-sell serão inseridos aqui pelo JS -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Coluna de Resumo -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-6 rounded-lg border border-gray-200 sticky top-28">
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-900">Resumo do Pedido</h2>
+                        
+                        <!-- NOVO: Barra de Desconto Progressivo -->
+                        <div id="progressive-discount-container" class="mb-6">
+                            <!-- Conteúdo será gerado pelo JS -->
+                        </div>
+
+                        <!-- Resumo (subtotal, total) -->
+                        <div id="cart-summary">
+                            <!-- Resumo será inserido aqui -->
+                        </div>
+                        
+                        <div class="mt-6">
+                            <label for="coupon-code" class="block text-sm font-medium text-gray-700 mb-2">Código de Desconto</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="coupon-code" placeholder="Insira o código" class="form-input flex-grow">
+                                <button class="bg-red-700 hover:bg-red-800 text-white font-semibold py-2 px-6 rounded-md transition-colors duration-300">Aplicar</button>
+                            </div>
+                        </div>
+                        <button onclick="showPage('page-checkout')" class="w-full bg-red-700 hover:bg-red-800 text-white font-semibold py-3 px-6 rounded-md mt-6 transition-colors duration-300">
+                            Finalizar Compra
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PÁGINA: CHECKOUT (ATUALIZADA) ===== -->
+        <div id="page-checkout" class="page-content hidden">
+            <h1 class="text-3xl font-bold mb-8 text-gray-900">Finalizar Compra</h1>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Coluna Esquerda: Formulários -->
+                <div class_alias="lg:col-span-2 space-y-6">
+                    
+                    <!-- Card 1: Informações de Contato -->
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h2 class="text-2xl font-semibold mb-6 text-gray-900 flex items-center gap-2">
+                            <span class="bg-red-700 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm">1</span>
+                            Informações de Contato
+                        </h2>
+                        <form id="checkout-form-contact" class="space-y-4">
+                            <div>
+                                <label for="checkout-name" class="block text-sm font-medium text-gray-700">Nome Completo</label>
+                                <input type="text" id="checkout-name" required class="form-input">
+                            </div>
+                            <div>
+                                <label for="checkout-email" class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="checkout-email" required class="form-input">
+                            </div>
+                            <div>
+                                <label for="checkout-phone" class="block text-sm font-medium text-gray-700">WhatsApp (para confirmação)</label>
+                                <input type="tel" id="checkout-phone" placeholder="(XX) 9XXXX-XXXX" required class="form-input">
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Card 2: Entrega e Frete -->
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h2 class="text-2xl font-semibold mb-6 text-gray-900 flex items-center gap-2">
+                            <span class="bg-red-700 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm">2</span>
+                            Entrega
+                        </h2>
+                        <form id="checkout-form-shipping" class="space-y-4">
+                            <div>
+                                <label for="checkout-address" class="block text-sm font-medium text-gray-700">Endereço de Entrega (Rua, N°, Bairro...)</label>
+                                <input type="text" id="checkout-address" required class="form-input">
+                            </div>
+                            
+                            <!-- NOVO: Simulação de Frete -->
+                            <div class="border-t border-gray-200 pt-4">
+                                <label for="checkout-cep" class="block text-sm font-medium text-gray-700">Calcular Frete (CEP)</label>
+                                <div class="flex gap-2 mt-1">
+                                    <input type="tel" id="checkout-cep" placeholder="XXXXX-XXX" class="form-input w-full">
+                                    <button type="button" id="calculate-shipping-btn" class="bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-6 rounded-md transition-colors duration-300">Calcular</button>
+                                </div>
+                                <div id="shipping-options-container" class="mt-4 space-y-2">
+                                    <!-- Opções de frete simuladas aparecerão aqui -->
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Card 3: Pagamento -->
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h2 class="text-2xl font-semibold mb-6 text-gray-900 flex items-center gap-2">
+                            <span class="bg-red-700 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+                            Pagamento
+                        </h2>
+                        
+                        <!-- Abas de Pagamento -->
+                        <div class="grid grid-cols-2 gap-2 mb-6">
+                            <!-- Aba Cartão de Crédito -->
+                            <button id="payment-tab-cc" onclick="selectPaymentMethod('cc')" class="payment-tab-selected flex items-center justify-center gap-2 border-2 border-gray-300 rounded-md p-4 transition-all duration-200">
+                                <ion-icon name="card-outline" class="text-xl"></ion-icon>
+                                <span class="font-semibold">Cartão de Crédito</span>
+                            </button>
+                            <!-- Aba PIX -->
+                            <button id="payment-tab-pix" onclick="selectPaymentMethod('pix')" class="flex items-center justify-center gap-2 border-2 border-gray-300 rounded-md p-4 transition-all duration-200 hover:bg-gray-50">
+                                <ion-icon name="qr-code-outline" class="text-xl"></ion-icon>
+                                <span class="font-semibold">PIX</span>
+                            </button>
+                        </div>
+
+                        <!-- Detalhes do PIX (Oculto por padrão) -->
+                        <div id="pix-payment-details" class="hidden">
+                            <div class="bg-green-50 border border-green-200 text-green-800 p-4 rounded-md text-center">
+                                <p class="font-semibold">Ganhe 10% de DESCONTO!</p>
+                                <p class="text-sm">O QR Code e o código Copia e Cola serão exibidos ao finalizar o pedido.</p>
+                            </div>
+                        </div>
+
+                        <!-- Detalhes do Cartão de Crédito (Visível por padrão) -->
+                        <div id="cc-payment-details" class="space-y-4">
+                            <form id="checkout-form-payment" class="space-y-4">
+                                <div>
+                                    <label for="cc-number" class="block text-sm font-medium text-gray-700">Número do Cartão</label>
+                                    <input type="tel" id="cc-number" placeholder="0000 0000 0000 0000" class="form-input">
+                                </div>
+                                <div>
+                                    <label for="cc-name" class="block text-sm font-medium text-gray-700">Nome no Cartão</label>
+                                    <input type="text" id="cc-name" placeholder="Como está no cartão" class="form-input">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="cc-expiry" class="block text-sm font-medium text-gray-700">Validade (MM/AA)</label>
+                                        <input type="text" id="cc-expiry" placeholder="MM/AA" class="form-input">
+                                    </div>
+                                    <div>
+                                        <label for="cc-cvc" class="block text-sm font-medium text-gray-700">CVC</label>
+                                        <input type="text" id="cc-cvc" placeholder="123" class="form-input">
+                                    </div>
+                                </div>
+                                <!-- Opções de Parcelamento -->
+                                <div class="pt-2">
+                                    <label for="installment-options" class="block text-sm font-medium text-gray-700">Opções de Parcelamento</label>
+                                    <select id="installment-options" class="form-input">
+                                        <!-- Parcelas serão geradas pelo JS -->
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coluna Direita: Resumo do Pedido -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white p-6 rounded-lg border border-gray-200 sticky top-28">
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-900">Seu Pedido</h2>
+                        <div id="checkout-summary-items" class="space-y-2 mb-4 max-h-60 overflow-y-auto">
+                            <!-- Itens do checkout serão inseridos aqui -->
+                        </div>
+                        
+                        <div id="checkout-summary-total" class="border-t border-gray-200 pt-4">
+                            <!-- Total do checkout será inserido aqui -->
+                        </div>
+                        
+                        <!-- Botão Finalizar -->
+                        <button id="finish-order-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md mt-6 transition duration-300 flex items-center justify-center space-x-2">
+                            <ion-icon name="shield-checkmark-outline" class="h-6 w-6"></ion-icon>
+                            <span>Finalizar Pedido</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ===== PÁGINA: CONFIRMAÇÃO DE PEDIDO (ATUALIZADA) ===== -->
+        <div id="page-confirmation" class="page-content hidden text-center">
+            <div class="bg-white p-8 md:p-12 rounded-lg border border-gray-200 max-w-2xl mx-auto">
+                <ion-icon name="checkmark-circle-outline" class="text-green-500 text-7xl mx-auto"></ion-icon>
+                <h1 class="text-4xl font-bold mt-6 mb-4 text-gray-900">Pedido Recebido!</h1>
+                <p class="text-lg text-gray-700 mb-6">
+                    Seu pedido <strong id="order-code" class="text-red-700"></strong> foi recebido com sucesso.
+                </p>
+                
+                <!-- NOVO: Conteúdo dinâmico para PIX ou Padrão -->
+                <div id="confirmation-details">
+                    <!-- Conteúdo Padrão (Cartão ou WhatsApp) -->
+                    <p class="text-gray-600 mb-8">
+                        Estamos abrindo o WhatsApp para você enviar o resumo do pedido e finalizar a compra com nosso vendedor.
+                    </p>
+                </div>
+                
+                <!-- NOVO: Conteúdo Falso do PIX (oculto por padrão) -->
+                <div id="confirmation-pix-details" class="hidden text-left border bg-gray-50 p-6 rounded-lg my-8">
+                    <h3 class="text-xl font-semibold text-gray-900 text-center mb-4">Pague com PIX</h3>
+                    <p class="text-gray-700 text-center mb-4">Escaneie o QR Code ou use o Copia e Cola.</p>
+                    <div class="flex justify-center mb-4">
+                        <!-- Imagem placeholder de um QR Code -->
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PedidoOrionFitnessPIX" alt="QR Code PIX" class="w-48 h-48 border rounded-md">
+                    </div>
+                    <label class="block text-sm font-medium text-gray-700">PIX Copia e Cola</label>
+                    <input type="text" readonly value="00020126...chave...pix...aleatoria...br" class="form-input bg-gray-100 cursor-pointer" onclick="this.select(); document.execCommand('copy'); showToast('Código PIX copiado!');">
+                    <p class="text-xs text-gray-500 text-center mt-2">Clique no código para copiar.</p>
+                </div>
+
+                <button onclick="showPage('page-home')" class="bg-red-700 hover:bg-red-800 text-white font-semibold py-3 px-8 text-lg rounded-md transition-colors duration-300">
+                    Voltar para a Home
+                </button>
+            </div>
+        </div>
+        
+        <!-- ===== PÁGINA: LOGIN/CADASTRO ===== -->
+        <!-- ATUALIZAÇÃO GERAL: Página de login/cadastro totalmente refeita -->
+        <div id="page-login" class="page-content hidden">
+            <!-- 
+              Container principal centralizado. 
+              Ajustado 'py-12' no 'main' para dar espaço em telas menores.
+              O 'main' já tem 'bg-white', mas colocamos um 'bg-gray-50'
+              para o card de login se destacar do fundo da página (que é branco).
+              Ajuste: Vamos manter o fundo branco e usar bordas.
+            -->
+            <div class="max-w-md mx-auto bg-white p-6 md:p-8 rounded-lg border border-gray-200 shadow-sm">
+                
+                <!-- Abas de Navegação -->
+                <div class="flex border-b border-gray-200 mb-6">
+                    <button id="login-tab-btn" 
+                            class="flex-1 py-3 text-center font-semibold text-red-700 border-b-2 border-red-700 transition-colors duration-300" 
+                            onclick="showLoginTab('login')">
+                        Login
+                    </button>
+                    <button id="register-tab-btn" 
+                            class="flex-1 py-3 text-center font-medium text-gray-500 hover:text-gray-700 transition-colors duration-300" 
+                            onclick="showLoginTab('register')">
+                        Cadastro
+                    </button>
+                </div>
+
+                <!-- Container do Formulário de Login -->
+                <div id="login-form-container">
+                    <h1 class="text-3xl font-bold text-center mb-6 text-gray-900">Bem-vindo de volta!</h1>
+                    <form class="space-y-5">
+                        <!-- Input Email com Ícone -->
+                        <div class="relative">
+                            <label for="login-email" class="block text-sm font-medium text-gray-700 sr-only">Email</label>
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <ion-icon name="mail-outline" class="h-5 w-5 text-gray-400"></ion-icon>
+                            </span>
+                            <input type="email" id="login-email" placeholder="Seu email" class="form-input pl-10 py-3">
+                        </div>
+                        
+                        <!-- Input Senha com Ícone -->
+                        <div class="relative">
+                            <label for="login-password" class="block text-sm font-medium text-gray-700 sr-only">Senha</label>
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <ion-icon name="lock-closed-outline" class="h-5 w-5 text-gray-400"></ion-icon>
+                            </span>
+                            <input type="password" id="login-password" placeholder="Sua senha" class="form-input pl-10 py-3">
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <a href="#" class="text-sm font-medium text-red-700 hover:text-red-800">Esqueceu sua senha?</a>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-semibold py-3 px-6 rounded-md mt-6 transition-colors duration-300 text-lg">
+                            Entrar
+                        </button>
+                    </form>
+                    
+                    <!-- Divisor "OU" -->
+                    <div class="flex items-center my-6">
+                        <div class="flex-grow border-t border-gray-200"></div>
+                        <span class="flex-shrink mx-4 text-sm font-medium text-gray-500">OU</span>
+                        <div class="flex-grow border-t border-gray-200"></div>
+                    </div>
+                    
+                    <!-- Login Social -->
+                    <div class="space-y-4">
+                        <button class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 font-semibold py-2.5 px-6 rounded-md transition-colors duration-300 hover:bg-gray-50">
+                            <ion-icon name="logo-google" class="h-5 w-5 text-red-600"></ion-icon>
+                            <span>Entrar com Google</span>
+                        </button>
+                        <button class="w-full flex items-center justify-center gap-3 bg-blue-800 text-white font-semibold py-2.5 px-6 rounded-md transition-colors duration-300 hover:bg-blue-900">
+                            <ion-icon name="logo-facebook" class="h-5 w-5"></ion-icon>
+                            <span>Entrar com Facebook</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Container do Formulário de Cadastro (Oculto) -->
+                <div id="register-form-container" class="hidden">
+                    <h1 class="text-3xl font-bold text-center mb-6 text-gray-900">Crie sua conta</h1>
+                    <form class="space-y-5">
+                        <!-- Input Nome com Ícone -->
+                        <div class="relative">
+                            <label for="reg-name" class="block text-sm font-medium text-gray-700 sr-only">Nome Completo</label>
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <ion-icon name="person-outline" class="h-5 w-5 text-gray-400"></ion-icon>
+                            </span>
+                            <input type="text" id="reg-name" placeholder="Nome completo" class="form-input pl-10 py-3">
+                        </div>
+                        
+                        <!-- Input Email com Ícone -->
+                        <div class="relative">
+                            <label for="reg-email" class="block text-sm font-medium text-gray-700 sr-only">Email</label>
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <ion-icon name="mail-outline" class="h-5 w-5 text-gray-400"></ion-icon>
+                            </span>
+                            <input type="email" id="reg-email" placeholder="Seu email" class="form-input pl-10 py-3">
+                        </div>
+                        
+                        <!-- Input Senha com Ícone -->
+                        <div class="relative">
+                            <label for="reg-password" class="block text-sm font-medium text-gray-700 sr-only">Senha</labeL>
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <ion-icon name="lock-closed-outline" class="h-5 w-5 text-gray-400"></ion-icon>
+                            </span>
+                            <input type="password" id="reg-password" placeholder="Crie uma senha" class="form-input pl-10 py-3">
+                        </div>
+                        
+                        <!-- Input Confirmar Senha com Ícone -->
+                        <div class="relative">
+                            <label for="reg-confirm-password" class="block text-sm font-medium text-gray-700 sr-only">Confirmar Senha</labeL>
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <ion-icon name="lock-closed-outline" class="h-5 w-5 text-gray-400"></ion-icon>
+                            </span>
+                            <input type="password" id="reg-confirm-password" placeholder="Confirme sua senha" class="form-input pl-10 py-3">
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-semibold py-3 px-6 rounded-md mt-6 transition-colors duration-300 text-lg">
+                            Criar Conta
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PÁGINA: CONTATO ===== -->
+        <div id="page-contact" class="page-content hidden">
+            <h1 class="text-3xl font-bold mb-8 text-center text-gray-900">Entre em Contato</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Formulário de Contato -->
+                <div class="bg-white p-8 rounded-lg border border-gray-200">
+                    <form class="space-y-4">
+                        <div>
+                            <label for="contact-name" class="block text-sm font-medium text-gray-700">Nome</LabeL>
+                            <input type="text" id="contact-name" class="form-input">
+                        </div>
+                        <div>
+                            <label for="contact-email" class="block text-sm font-medium text-gray-700">Email</LabeL>
+                            <input type="email" id="contact-email" class="form-input">
+                        </div>
+                        <div>
+                            <label for="contact-message" class="block text-sm font-medium text-gray-700">Mensagem</LabeL>
+                            <textarea id="contact-message" rows="4" class="form-input"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-semibold py-3 px-6 rounded-md mt-6 transition-colors duration-300">
+                            Enviar Mensagem
+                        </button>
+                    </form>
+                </div>
+                <!-- Informações de Contato -->
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-lg border border-gray-200 flex items-start space-x-4">
+                        <ion-icon name="location-outline" class="h-8 w-8 text-red-700 mt-1"></ion-icon>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Endereço</h3>
+                            <p class="text-gray-700">R. Teodoro Guedes de Campos, 262 - Parque Santa Bárbara<br>Campinas, SP - 13064-590</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border border-gray-200 flex items-start space-x-4">
+                        <ion-icon name="call-outline" class="h-8 w-8 text-red-700 mt-1"></ion-icon>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Telefone / WhatsApp</h3>
+                            <p class="text-gray-700">(19) 98161-7860</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border border-gray-200 flex items-start space-x-4">
+                        <ion-icon name="mail-outline" class="h-8 w-8 text-red-700 mt-1"></ion-icon>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Email</h3>
+                            <p class="text-gray-700">mdttrivelato@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PÁGINA: EQUIPE (✅) ===== -->
+        <div id="page-team" class="page-content hidden">
+            <h1 class="text-3xl font-bold mb-8 text-center text-gray-900">Conheça Nossa Equipe</h1>
+            <p class="text-lg text-gray-700 text-center max-w-3xl mx-auto mb-12">
+                Profissionais dedicados a transformar seu corpo e sua saúde.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Membro da Equipe 1 -->
+                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden text-center transition-all duration-300 hover:shadow-xl">
+                    <img src="https://i.postimg.cc/R0hN223G/carlos.png" alt="Membro da Equipe 1" class="w-full h-64 object-cover" loading="lazy">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold mb-1 text-gray-900">Carlos Silva</h3>
+                        <p class="text-red-700 font-medium mb-3">Head Coach</p>
+                        <p class="text-gray-600 text-sm">
+                            Especialista em hipertrofia e preparação para competições, com 10 anos de experiência.
+                        </p>
+                    </div>
+                </div>
+                <!-- Membro da Equipe 2 -->
+                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden text-center transition-all duration-300 hover:shadow-xl">
+                    <img src="https://i.postimg.cc/9Qr222px/juliana.png" alt="Membro da Equipe 2" class="w-full h-64 object-cover" loading="lazy">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold mb-1 text-gray-900">Juliana Santos</h3>
+                        <p class="text-red-700 font-medium mb-3">Nutricionista Esportiva</p>
+                        <p class="text-gray-600 text-sm">
+                            Focada em reeducação alimentar e performance. Monta dietas personalizadas para seus objetivos.
+                        </p>
+                    </div>
+                </div>
+                <!-- Membro da Equipe 3 -->
+                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden text-center transition-all duration-300 hover:shadow-xl">
+                    <img src="https://i.postimg.cc/HxTPp4mY/joao.png" alt="Membro da Equipe 3" class="w-full h-64 object-cover" loading="lazy">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold mb-1 text-gray-900">Marcos Andrade</h3>
+                        <p class="text-red-700 font-medium mb-3">Fisioterapeuta</p>
+                        <p class="text-gray-600 text-sm">
+                            Especialista em prevenção e recuperação de lesões esportivas, garantindo um treino seguro.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 
+      ATUALIZAÇÃO ESTRUTURAL: Rodapé
+      - Layout de 4 colunas mantido, mas com tipografia e espaçamento 'clean'.
+      - Fundo 'bg-gray-900' mantido para contraste, com texto 'text-gray-400'.
+    -->
+    <footer class="bg-gray-900 text-gray-400 pt-16 pb-8">
+        <div class="container mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                
+                <!-- Coluna 1: Sobre Nós -->
+                <div class="md:col-span-2 lg:col-span-1">
+                    <h5 class="text-white text-lg font-semibold mb-4">Sobre a Orion Fitness</h5>
+                    <p class="text-sm leading-relaxed">
+                        Somos mais que uma academia, somos um centro de performance e saúde. Nossa loja traz os melhores suplementos e acessórios, testados e aprovados por nossa equipe de profissionais.
+                    </p>
+                </div>
+
+                <!-- Coluna 2: Navegação -->
+                <div>
+                    <h5 class="text-white text-lg font-semibold mb-4">Navegação</h5>
+                    <ul class="space-y-3">
+                        <li><a onclick="showPage('page-home')" class="cursor-pointer hover:text-white transition-colors">Início</a></li>
+                        <li><a onclick="showProductPage()" class="cursor-pointer hover:text-white transition-colors">Catálogo Completo</a></li>
+                        <li><a onclick="showPage('page-team')" class="cursor-pointer hover:text-white transition-colors">Nossa Equipe</a></li>
+                        <li><a onclick="showPage('page-login')" class="cursor-pointer hover:text-white transition-colors">Minha Conta</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 3: Contato -->
+                <div>
+                    <h5 class="text-white text-lg font-semibold mb-4">Atendimento</h5>
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
+                            <ion-icon name="logo-whatsapp" class="h-5 w-5 mr-2 text-green-400"></ion-icon>
+                            <span>(19) 98161-7860</span>
+                        </li>
+                        <li class="flex items-center">
+                            <ion-icon name="mail-outline" class="h-5 w-5 mr-2 text-red-400"></ion-icon>
+                            <span>mdttrivelato@gmail.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <ion-icon name="time-outline" class="h-5 w-5 mr-2 text-blue-400"></ion-icon>
+                            <span>Seg. à Sex. 8h às 18h</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 4: Redes Sociais -->
+                <div>
+                    <h5 class="text-white text-lg font-semibold mb-4">Acompanhe nas Redes</h5>
+                    <div class="flex space-x-5">
+                        <a href="https://www.instagram.com/orionfitnessacademia/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110" title="Instagram">
+                            <ion-icon name="logo-instagram" class="h-7 w-7"></ion-icon>
+                        </a>
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110" title="Facebook">
+                            <ion-icon name="logo-facebook" class="h-7 w-7"></ion-icon>
+                        </a>
+                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110" title="Twitter/X">
+                            <ion-icon name="logo-twitter" class="h-7 w-7"></ion-icon>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-gray-800 pt-8 text-center">
+                <p class="text-sm text-gray-500">&copy; 2025 Orion Fitness. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== Notificação Toast (NOVO) ===== -->
+    <!-- 
+      Elemento da notificação. 
+      Começa invisível (opacity-0) e fora da tela (translate-x-[...]).
+      Ajustado com 'top-24' para mobile para não ficar sob o header.
+    -->
+    <div id="toast-notification" 
+         class="fixed top-24 md:top-5 right-5 z-[100] bg-gray-900 text-white py-3 px-5 rounded-lg shadow-lg flex items-center gap-3 transition-all duration-500 ease-in-out transform translate-x-[calc(100%+20px)] opacity-0"
+         role="alert">
+        <ion-icon name="checkmark-circle" class="text-green-400 text-2xl"></ion-icon>
+        <span id="toast-message" class="text-sm font-medium"></span>
+    </div>
+
+    <!-- ===== Modal de Ofertas (NOVO) ===== -->
+    <!-- 
+      ATUALIZAÇÃO: 
+      - Adicionado 'hidden' por padrão (será removido pelo JS).
+      - Adicionadas classes de transição de opacidade/transform.
+    -->
+    <div id="offers-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out hidden" onclick="closeOffersModal()">
+        <!-- 
+          Painel do Modal 
+          ATUALIZAÇÃO: Adicionado ID, 'transform' e classes de transição.
+        -->
+        <div id="offers-modal-panel" class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden transform opacity-0 scale-95 transition-all duration-300 ease-in-out" onclick="event.stopPropagation();">
+            <!-- Cabeçalho -->
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+                    <ion-icon name="flame-outline" class="text-red-700"></ion-icon>
+                    Ofertas Especiais
+                </h3>
+                <button onclick="closeOffersModal()" class="text-gray-400 hover:text-gray-700">
+                    <ion-icon name="close-outline" class="h-7 w-7"></ion-icon>
+                </button>
+            </div>
+            
+            <!-- Conteúdo (lista de produtos) -->
+            <div id="offers-modal-content" class="p-4 max-h-[60vh] overflow-y-auto space-y-3">
+                <!-- Produtos em oferta serão inseridos aqui pelo JS -->
+            </div>
+            
+            <!-- Rodapé -->
+            <div class="p-4 bg-gray-50 border-t text-right">
+                <button onclick="closeOffersModal(); showProductPage();" class="bg-red-700 hover:bg-red-800 text-white font-semibold py-2 px-5 rounded-md transition-colors duration-300">
+                    Ver Catálogo Completo
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ============================================= -->
+    <!-- SCRIPT DE LÓGICA DO E-COMMERCE (JAVASCRIPT) -->
+    <!-- ============================================= -->
+    <script>
+        // --- NÚMERO DE WHATSAPP DA LOJA (ADMIN) ---
+        const adminWhatsAppNumber = "5519981617860"; // <-- ATENÇÃO: Verifique se este número está correto
+
+        // --- BANCO de DADOS FALSO DE PRODUTOS ---
+        const products = [
+            {
+                id: 1,
+                name: "Whey Protein Gold (900g)",
+                price: 189.90,
+                description: "O whey protein mais vendido do mundo. Ideal para recuperação muscular e ganho de massa magra. Sabor baunilha. Fonte de proteína de alta qualidade, essencial para a construção e reparação muscular após exercícios intensos. Contém aminoácidos essenciais, incluindo BCAAs, que auxiliam na redução da fadiga e na promoção do crescimento muscular. Fácil de misturar e delicioso.",
+                image: "https://i.postimg.cc/3J7GwS08/dasd.png",
+                featured: true,
+                category: 'suplementos',
+                discountPercent: 10 // <-- NOVO: Para badge de desconto
+            },
+            {
+                id: 2,
+                name: "Creatina Monohidratada (300g)",
+                price: 89.90,
+                description: "Aumente sua força e explosão muscular. Creatina pura, monohidratada e micronizada para melhor absorção. Suplemento fundamental para otimizar o desempenho em treinos de alta intensidade. Melhora a capacidade de produção de energia nas células musculares, resultando em mais força, potência e resistência. Contribui para o aumento do volume muscular. Aumente sua força e explosão muscular. Creatina pura, monohidratada e micronizada para melhor absorção. Suplemento fundamental para otimizar o desempenho em treinos de alta intensidade. Melhora a capacidade de produção de energia nas células musculares, resultando em mais força, potência e resistência. Contribui para o aumento do volume muscular.",
+                image: "https://i.postimg.cc/tJR9KxJv/fsa.png",
+                featured: true,
+                category: 'suplementos'
+            },
+            {
+                id: 3,
+                name: "Barra de Proteína (Unidade)",
+                price: 9.50,
+                description: "Lanche prático e delicioso com 20g de proteína por barra. Perfeito para o pós-treino ou entre refeições. Uma opção nutritiva e conveniente para manter a ingestão de proteínas ao longo do dia. Ajuda na saciedade e na recuperação muscular, com baixo teor de carboidratos e açúcares. Ideal para quem busca um lanche saudável e saboroso.",
+                image: "https://i.postimg.cc/mgrkJKJC/barrinhas.png",
+                featured: true, // Modificado para aparecer no cross-sell
+                isNew: true, // <-- Para badge 'Novo'
+                category: 'suplementos'
+            },
+            {
+                id: 4,
+                name: "Luvas de Treino Pro",
+                price: 65.00,
+                description: "Proteja suas mãos e melhore sua pegada. Feitas com material resistente e respirável. Projetadas para oferecer conforto e segurança durante o levantamento de peso e outros exercícios. Possuem acolchoamento estratégico para reduzir a pressão e bolhas, além de um design antiderrapante para uma pegada firme.",
+                image: "https://i.postimg.cc/RVkwBS18/luvas-academia.png",
+                featured: true,
+                category: 'acessorios'
+            },
+            {
+                id: 5,
+                name: "Coqueteleira Orion Fitness",
+                price: 29.90,
+                description: "Misture seus shakes sem empelotar. Capacidade de 600ml, livre de BPA e com mola misturadora. Perfeita para preparar seus suplementos de forma rápida e eficiente. Design ergonômico, fácil de limpar e transportar, ideal para levar para a academia ou para o trabalho.",
+                image: "https://i.postimg.cc/zBqGwMCx/shake-orion.png",
+                featured: true, // Modificado para aparecer no cross-sell
+                isNew: true, 
+                category: 'acessorios'
+            },
+            {
+                id: 6,
+                name: "Pré-Treino C4 (30 doses)",
+                price: 149.90,
+                description: "Energia explosiva, foco e pump para seus treinos mais intensos. Sabor frutas vermelhas. Formulado para maximizar sua performance, este pré-treino oferece uma combinação poderosa de ingredientes que aumentam a energia, a concentração e a resistência. Prepare-se para treinos mais produtivos e resultados impressionantes.",
+                image: "https://i.postimg.cc/mDZT1949/c4.png",
+                featured: true,
+                category: 'suplementos'
+            },
+            {
+                id: 7,
+                name: "BCAA em Pó (300g)",
+                price: 79.90,
+                description: "Aminoácidos de cadeia ramificada para recuperação e construção muscular. Ideal para ser consumido durante ou após o treino. Reduz a fadiga muscular e auxilia na síntese proteica, promovendo um ambiente anabólico ideal para o crescimento dos músculos. Sabor limão.",
+                image: "https://i.postimg.cc/fTdQLCdC/bcaa.png",
+                featured: false,
+                category: 'suplementos'
+            },
+            {
+                id: 8,
+                name: "Cinto de Levantamento de Peso",
+                price: 119.90,
+                description: "Proporciona suporte lombar e estabilidade para levantamentos pesados. Essencial para prevenir lesões e melhorar a performance. Confeccionado em material resistente com fechamento ajustável para máximo conforto e segurança.",
+                image: "https://i.postimg.cc/Jzm7CvFY/cinto-peso.png",
+                featured: false,
+                category: 'acessorios'
+            },
+            {
+                id: 9,
+                name: "Camiseta Dry Fit Orion",
+                price: 89.90,
+                description: "Camiseta leve e respirável, ideal para treinos intensos. Tecnologia Dry Fit que afasta o suor da pele.",
+                image: "https://i.postimg.cc/7Zm4860n/dryfit-orion.png",
+                featured: false,
+                isNew: true, 
+                category: 'roupas'
+            },
+            {
+                id: 10,
+                name: "Legging Performance Feminina",
+                price: 129.90,
+                description: "Legging de alta compressão com cintura alta. Conforto e segurança para seus agachamentos.",
+                image: "https://i.postimg.cc/SxZB1PbT/legging.png",
+                featured: false,
+                isNew: true, 
+                category: 'roupas'
+            }
+        ];
+
+        // --- ESTADO DA APLICAÇÃO ---
+        let cart = []; // Armazena os itens do carrinho
+        let currentCategoryFilter = null; // Armazena o último filtro de categoria usado
+        const allPages = document.querySelectorAll('.page-content');
+        
+        // NOVO: Definições de Desconto Progressivo
+        const progressiveDiscountTiers = [
+            {goal: 150, rate: 0.05, label: "5% OFF"},
+            {goal: 300, rate: 0.10, label: "10% OFF"}
+        ];
+
+        // NOVO: Estado do Checkout
+        let selectedShipping = { cost: 0, label: 'A calcular' };
+        let selectedPaymentMethod = 'cc'; // 'cc' (Cartão) ou 'pix'
+        const PIX_DISCOUNT_RATE = 0.10; // 10% de desconto no PIX
+
+        // --- FUNÇÃO GLOBAL DE NAVEGAÇÃO ---
+        function showPage(pageId) {
+            allPages.forEach(page => {
+                page.classList.add('hidden');
+            });
+
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+            } else {
+                console.error(`Página não encontrada: ${pageId}`);
+                document.getElementById('page-home').classList.remove('hidden'); // Volta para home
+            }
+            
+            window.scrollTo(0, 0);
+
+            // Funções de renderização específicas ao mostrar a página
+            if (pageId === 'page-cart') {
+                renderCart(); // ATUALIZADO: renderCart() agora cuida de tudo
+            }
+            if (pageId === 'page-checkout') {
+                // NOVO: Reseta o frete e o método de pagamento ao entrar no checkout
+                selectedShipping = { cost: 0, label: 'A calcular' };
+                document.getElementById('shipping-options-container').innerHTML = '';
+                document.getElementById('checkout-cep').value = '';
+                selectPaymentMethod('cc'); // Reseta para cartão de crédito
+                renderCheckoutSummary();
+            }
+            
+            // NOVO: Fecha o menu mobile ao navegar
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        }
+
+        // --- FUNÇÃO PARA MOSTRAR PÁGINA DE PRODUTOS COM FILTRO ---
+        function showProductPage(categoryFilter = null) {
+            currentCategoryFilter = categoryFilter; // Salva o filtro atual
+            
+            renderProductList(categoryFilter);
+
+            const titleEl = document.getElementById('product-page-title');
+            if (titleEl) {
+                if (categoryFilter === 'suplementos') {
+                    titleEl.innerText = 'Catálogo - Suplementos';
+                } else if (categoryFilter === 'acessorios') {
+                    titleEl.innerText = 'Catálogo - Acessórios';
+                } else if (categoryFilter === 'roupas') {
+                    titleEl.innerText = 'Catálogo - Roupas';
+                } else {
+                    titleEl.innerText = 'Catálogo de Produtos'; // Título padrão
+                }
+            }
+            
+            showPage('page-products');
+        }
+
+        // --- LÓGICA DE RENDERIZAÇÃO DE PRODUTOS ---
+
+        /** Formata um número para o padrão monetário BRL */
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        /** NOVO: Mostra uma notificação toast */
+        let toastTimeout; // Variável para controlar o timeout
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            const toastMessage = document.getElementById('toast-message');
+            if (!toast || !toastMessage) return;
+
+            // Limpa o timeout anterior se houver um
+            if (toastTimeout) {
+                clearTimeout(toastTimeout);
+            }
+
+            // Define a mensagem
+            toastMessage.innerText = message;
+
+            // Mostra o toast (animação de entrada)
+            toast.classList.remove('opacity-0', 'translate-x-[calc(100%+20px)]');
+            toast.classList.add('opacity-100', 'translate-x-0');
+
+            // Esconde o toast após 3 segundos (animação de saída)
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-x-0');
+                toast.classList.add('opacity-0', 'translate-x-[calc(100%+20px)]');
+            }, 3000); // 3 segundos
+        }
+
+        /** * ATUALIZAÇÃO CRÍTICA: Cria o HTML para um card de produto
+         * - Novo layout 'clean' (estilo Dafy).
+         * - Adiciona badges (Novo, % OFF).
+         * - Adiciona ícone de WhatsApp individual.
+        */
+        function createProductCard(product) {
+            
+            // --- Lógica do Botão WhatsApp Individual ---
+            const whatsappMessage = encodeURIComponent(`Olá! Gostaria de saber mais sobre ${product.name}.`);
+            const whatsappLink = `https://wa.me/${adminWhatsAppNumber}?text=${whatsappMessage}`;
+
+            // --- Lógica dos Badges Promocionais ---
+            let badgeHtml = '';
+            // ATUALIZAÇÃO: Badge de WhatsApp não fica por cima do badge de desconto
+            if (product.discountPercent) {
+                badgeHtml = `<span class="absolute top-3 left-3 bg-red-700 text-white text-xs font-semibold px-2.5 py-0.5 rounded-md z-10">${product.discountPercent}% OFF</span>`;
+            } else if (product.isNew) {
+                badgeHtml = `<span class="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-2.5 py-0.5 rounded-md z-10">Novo</span>`;
+            }
+
+            // --- Estrutura HTML do Card 'Clean' ---
+            return `
+                <!-- 
+                  ATUALIZAÇÃO UX/UI: 
+                  - Card 'premium clean' com borda e sombra suave.
+                  - Imagem aspect-[1/1] para uniformidade.
+                  - Efeito de hover suave (hover:shadow-lg).
+                  - Badges promocionais (Novo, % OFF).
+                  - Botão de WhatsApp individual por produto.
+                -->
+                <div class="relative bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden group transition-all duration-300 hover:shadow-lg">
+                    
+                    <!-- Link principal do card -->
+                    <a href="#" class="cursor-pointer" onclick="event.preventDefault(); showProductDetails(${product.id});">
+                        ${badgeHtml}
+                        <div class="overflow-hidden rounded-t-lg">
+                            <img src="${product.image}" alt="${product.name}" 
+                                 class="w-full aspect-[1/1] object-cover bg-gray-50 transition-transform duration-300 group-hover:scale-105" 
+                                 loading="lazy">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-base font-medium text-gray-800 truncate mb-1" title="${product.name}">${product.name}</h3>
+                            <p class="text-xl font-bold text-gray-900 mt-2">${formatCurrency(product.price)}</p>
+                        </div>
+                    </a>
+                    
+                    <!-- Ações -->
+                    <div class="p-4 pt-0">
+                         <button class="w-full bg-red-700 hover:bg-red-800 text-white font-semibold py-2.5 px-4 rounded-md transition-colors duration-300" 
+                                 onclick="event.stopPropagation(); addToCart(${product.id});">
+                            Adicionar ao carrinho
+                        </button>
+                    </div>
+                    
+                    <!-- 
+                      NOVO RECURSO: Botão WhatsApp por produto.
+                      - ATUALIZADO: Movido para o canto superior direito (top-3 right-3).
+                      - Cor verde padrão do WhatsApp (#25D366).
+                      - Link dinâmico com o nome do produto.
+                    -->
+                    <a href="${whatsappLink}" 
+                       target="_blank" 
+                       class="absolute top-3 right-3 bg-green-500 text-white p-2.5 rounded-full shadow-lg cursor-pointer hover:bg-green-600 transition-all transform hover:scale-110 z-10 flex items-center justify-center" 
+                       onclick="event.stopPropagation();"
+                       title="Chamar no WhatsApp">
+                        <ion-icon name="logo-whatsapp" class="h-5 w-5"></ion-icon>
+                    </a>
+                </div>
+            `;
+        }
+        
+        /** Renderiza a lista de todos os produtos */
+        function renderProductList(categoryFilter = null) {
+            const grid = document.getElementById('product-list-grid');
+            if (!grid) return;
+            
+            let productsToRender = products;
+
+            if (categoryFilter) {
+                productsToRender = products.filter(p => p.category === categoryFilter);
+            }
+
+            if (productsToRender.length === 0) {
+                grid.innerHTML = `<p class="text-gray-500 col-span-full text-center py-10 text-lg">Nenhum produto encontrado nesta categoria.</p>`;
+                return;
+            }
+
+            let html = '';
+            productsToRender.forEach(product => {
+                html += createProductCard(product);
+            });
+            grid.innerHTML = html;
+        }
+
+        /** Renderiza os produtos em destaque na home */
+        function renderFeaturedProducts() {
+            const grid = document.getElementById('featured-products-grid');
+            if (!grid) return;
+
+            let html = '';
+            products.filter(p => p.featured).forEach(product => {
+                html += createProductCard(product);
+            });
+            grid.innerHTML = html;
+        }
+
+        /** Renderiza os lançamentos na home */
+        function renderNewReleases() {
+            const grid = document.getElementById('new-releases-grid');
+            if (!grid) return;
+
+            let html = '';
+            products.filter(p => p.isNew).forEach(product => {
+                html += createProductCard(product);
+            });
+            grid.innerHTML = html;
+        }
+
+        /** Renderiza a página de detalhes de um produto */
+        function showProductDetails(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const container = document.getElementById('product-detail-content');
+            container.innerHTML = `
+                <!-- Coluna da Imagem -->
+                <div class="bg-gray-50 border border-gray-200 p-6 rounded-lg flex items-center justify-center">
+                    <img src="${product.image}" alt="${product.name}" class="max-w-full h-auto max-h-96 object-contain" loading="lazy">
+                </div>
+                
+                <!-- Coluna de Informações -->
+                <div class="flex flex-col justify-center">
+                    <h1 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">${product.name}</h1>
+                    <p class="text-3xl font-bold text-red-700 mb-6">${formatCurrency(product.price)}</p>
+                    <p class="text-gray-700 leading-relaxed mb-8">${product.description}</p>
+                    <button class="w-full sm:w-auto bg-red-700 hover:bg-red-800 text-white font-semibold py-3 px-10 text-lg rounded-md transition-colors duration-300" onclick="addToCart(${product.id})">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+            `;
+            showPage('page-details');
+        }
+
+        // --- LÓGICA DO CARRINHO ---
+
+        /** Adiciona um item ao carrinho */
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartUI();
+            
+            // ATUALIZAÇÃO: Chama a notificação toast
+            showToast(`${product.name} foi adicionado!`);
+            
+            console.log("Item adicionado:", product.name);
+        }
+
+        /** Atualiza o contador do carrinho e renderiza o conteúdo */
+        function updateCartUI() {
+            const cartCountEl = document.getElementById('cart-count');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCountEl.innerText = totalItems;
+            
+            // ATUALIZAÇÃO: A função renderCart() é chamada se a página do carrinho estiver visível
+            if (document.getElementById('page-cart').classList.contains('hidden') === false) {
+                renderCart();
+            }
+             if (document.getElementById('page-checkout').classList.contains('hidden') === false) {
+                renderCheckoutSummary();
+            }
+        }
+        
+        /** NOVO: Calcula o desconto progressivo */
+        function getProgressiveDiscount(subtotal) {
+            const tiers = progressiveDiscountTiers;
+            let discountRate = 0;
+            let discountLabel = "";
+
+            // Aplica o maior desconto que o usuário atingiu
+            if (subtotal >= tiers[0].goal) { 
+                discountRate = tiers[0].rate; 
+                discountLabel = tiers[0].label; 
+            }
+            if (subtotal >= tiers[1].goal) { 
+                discountRate = tiers[1].rate; 
+                discountLabel = tiers[1].label; 
+            }
+            
+            const discountAmount = subtotal * discountRate;
+            return { discountRate, discountAmount, discountLabel };
+        }
+        
+        /** ATUALIZAÇÃO: renderCart() foi totalmente refeita para ser mais interativa */
+        function renderCart() {
+            const itemsContainer = document.getElementById('cart-items-container');
+            const summaryContainer = document.getElementById('cart-summary');
+            const discountContainer = document.getElementById('progressive-discount-container');
+            const crossSellContainer = document.getElementById('cart-cross-sell-grid');
+
+            if (!itemsContainer || !summaryContainer || !discountContainer || !crossSellContainer) return;
+
+            // --- 1. SE O CARRINHO ESTIVER VAZIO ---
+            if (cart.length === 0) {
+                // ATUALIZAÇÃO: Tela de carrinho vazio mais bonita
+                itemsContainer.innerHTML = `
+                    <div class="text-center py-16">
+                        <ion-icon name="cart-outline" class="text-6xl text-gray-300"></ion-icon>
+                        <h2 class="text-2xl font-semibold text-gray-700 mt-4">Seu carrinho está vazio</h2>
+                        <p class="text-gray-500 mt-2">Adicione produtos para vê-los aqui.</p>
+                        <button onclick="showProductPage()" class="mt-6 bg-red-700 hover:bg-red-800 text-white font-semibold py-3 px-6 rounded-md transition-colors duration-300">
+                            Ver todos os produtos
+                        </button>
+                    </div>
+                `;
+                // Limpa as outras seções
+                summaryContainer.innerHTML = '';
+                discountContainer.innerHTML = '';
+                crossSellContainer.innerHTML = '';
+                return;
+            }
+
+            // --- 2. SE O CARRINHO TIVER ITENS ---
+
+            // Renderiza os itens
+            let itemsHtml = '';
+            cart.forEach(item => {
+                itemsHtml += `
+                    <div class="flex items-center justify-between border-b border-gray-200 py-4 last:border-b-0">
+                        <div class="flex items-center space-x-4">
+                            <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded-md bg-gray-50 border border-gray-200" loading="lazy">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">${item.name}</h3>
+                                <p class="text-gray-600">${formatCurrency(item.price)}</p>
+                                <button onclick="removeFromCart(${item.id})" class="text-red-700 hover:text-red-800 text-sm mt-1">Remover</button>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="changeQuantity(${item.id}, -1)" class="bg-gray-100 text-gray-700 w-8 h-8 rounded-md font-bold flex items-center justify-center hover:bg-gray-200">-</button>
+                            <span class="w-8 text-center text-lg font-medium">${item.quantity}</span>
+                            <button onclick="changeQuantity(${item.id}, 1)" class="bg-gray-100 text-gray-700 w-8 h-8 rounded-md font-bold flex items-center justify-center hover:bg-gray-200">+</button>
+                        </div>
+                        <p class="text-lg font-bold text-gray-900 w-24 text-right hidden sm:block">${formatCurrency(item.price * item.quantity)}</p>
+                    </div>
+                `;
+            });
+            itemsContainer.innerHTML = itemsHtml;
+
+            // Cálculos
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const { discountAmount, discountLabel } = getProgressiveDiscount(subtotal);
+            const total = subtotal - discountAmount; 
+            const tiers = progressiveDiscountTiers; // Pega as metas
+
+            // Renderiza a Barra de Desconto Progressivo
+            let discountHtml = '';
+            if (subtotal < tiers[0].goal) {
+                const remaining = tiers[0].goal - subtotal;
+                const progress = (subtotal / tiers[0].goal) * 100;
+                discountHtml = `
+                    <p class="text-sm font-medium text-gray-700 mb-2">Faltam ${formatCurrency(remaining)} para ganhar ${tiers[0].label}!</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="bg-red-600 h-2.5 rounded-full" style="width: ${progress}%"></div></div>
+                `;
+            } else if (subtotal < tiers[1].goal) {
+                const remaining = tiers[1].goal - subtotal;
+                const progress = (subtotal / tiers[1].goal) * 100;
+                discountHtml = `
+                    <p class="text-sm font-medium text-green-600 mb-2">🎉 Você ganhou ${tiers[0].label}!</p>
+                    <p class="text-sm font-medium text-gray-700 mb-2">Faltam ${formatCurrency(remaining)} para ${tiers[1].label}!</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="bg-red-600 h-2.5 rounded-full" style="width: ${progress}%"></div></div>
+                `;
+            } else {
+                discountHtml = `
+                    <p class="text-sm font-medium text-green-600 mb-2">🎉 Parabéns! Você atingiu o desconto máximo de ${tiers[1].label}!</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="bg-green-600 h-2.5 rounded-full" style="width: 100%"></div></div>
+                `;
+            }
+            discountContainer.innerHTML = discountHtml;
+
+            // Renderiza o Resumo do Pedido (com desconto)
+            summaryContainer.innerHTML = `
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-700">Subtotal</span>
+                    <span class="font-medium text-gray-900">${formatCurrency(subtotal)}</span>
+                </div>
+                ${discountAmount > 0 ? `
+                <div class="flex justify-between mb-2">
+                    <span class="text-green-600 font-medium">Desconto (${discountLabel})</span>
+                    <span class="font-medium text-green-600">-${formatCurrency(discountAmount)}</span>
+                </div>
+                ` : `
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-700">Desconto</span>
+                    <span class="font-medium text-gray-900">R$ 0,00</span>
+                </div>
+                `}
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-700">Frete</span>
+                    <span class="font-medium text-gray-900">A calcular</span>
+                </div>
+                <div class="border-t border-gray-200 pt-4 mt-4">
+                    <div class="flex justify-between items-center text-xl font-bold text-gray-900">
+                        <span>Total</span>
+                        <span>${formatCurrency(total)}</span>
+                    </div>
+                </div>
+            `;
+
+            // Renderiza o Cross-sell
+            const crossSellItems = products.filter(p => p.featured && !cart.some(item => item.id === p.id)).slice(0, 3); // Limita a 3
+            let crossSellHtml = '';
+            crossSellItems.forEach(product => {
+                crossSellHtml += `
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden text-center p-3">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-24 object-cover rounded-md mb-2" loading="lazy">
+                        <h4 class="text-sm font-medium text-gray-800 truncate" title="${product.name}">${product.name}</h4>
+                        <p class="text-base font-bold text-gray-900 my-1">${formatCurrency(product.price)}</p>
+                        <button class="w-full text-sm bg-red-600 hover:bg-red-700 text-white font-semibold py-1.5 px-3 rounded-md transition-colors duration-300" 
+                                onclick="addToCart(${product.id})">
+                            Adicionar
+                        </button>
+                    </div>
+                `;
+            });
+            crossSellContainer.innerHTML = crossSellHtml;
+        }
+
+        /** Altera a quantidade de um item no carrinho */
+        function changeQuantity(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (!item) return;
+
+            item.quantity += delta;
+
+            if (item.quantity <= 0) {
+                removeFromCart(productId);
+            } else {
+                updateCartUI();
+            }
+        }
+
+        /** Remove um item do carrinho */
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+        }
+
+        // --- LÓGICA DE CHECKOUT (ATUALIZADA) ---
+
+        /** NOVO: Simula o cálculo de frete */
+        function calculateShipping() {
+            const cepInput = document.getElementById('checkout-cep');
+            const container = document.getElementById('shipping-options-container');
+            const calcBtn = document.getElementById('calculate-shipping-btn');
+            
+            if (!cepInput.value) {
+                showToast("Por favor, insira um CEP.");
+                return;
+            }
+
+            container.innerHTML = `<p class="text-gray-600 text-sm flex items-center gap-2"><ion-icon name="time-outline" class="animate-spin"></ion-icon> Calculando frete...</p>`;
+            calcBtn.disabled = true;
+            calcBtn.innerText = "..."
+
+            // Simulação
+            setTimeout(() => {
+                const optionsHtml = `
+                    <label class="flex items-center p-3 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="shipping-option" class="form-radio text-red-700 focus:ring-red-700" onchange="selectShipping(15.00, 'SEDEX')">
+                        <div class="ml-3">
+                            <span class="block font-semibold text-gray-800">SEDEX</span>
+                            <span class="block text-sm text-gray-600">Receba em 2 dias úteis - ${formatCurrency(15.00)}</span>
+                        </div>
+                    </label>
+                    <label class="flex items-center p-3 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="shipping-option" class="form-radio text-red-700 focus:ring-red-700" onchange="selectShipping(8.00, 'PAC')">
+                        <div class="ml-3">
+                            <span class="block font-semibold text-gray-800">PAC</span>
+                            <span class="block text-sm text-gray-600">Receba em 5 dias úteis - ${formatCurrency(8.00)}</span>
+                        </div>
+                    </label>
+                `;
+                container.innerHTML = optionsHtml;
+                calcBtn.disabled = false;
+                calcBtn.innerText = "Calcular";
+            }, 1500); // 1.5 segundos de simulação
+        }
+
+        /** NOVO: Seleciona o frete e atualiza o resumo */
+        function selectShipping(cost, label) {
+            selectedShipping = { cost, label };
+            renderCheckoutSummary();
+        }
+
+        /** NOVO: Seleciona o método de pagamento */
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            const tabCC = document.getElementById('payment-tab-cc');
+            const tabPix = document.getElementById('payment-tab-pix');
+            const detailsCC = document.getElementById('cc-payment-details');
+            const detailsPix = document.getElementById('pix-payment-details');
+            const finishBtn = document.getElementById('finish-order-btn');
+
+            if (method === 'pix') {
+                tabPix.classList.add('payment-tab-selected');
+                tabCC.classList.remove('payment-tab-selected');
+                detailsPix.classList.remove('hidden');
+                detailsCC.classList.add('hidden');
+                finishBtn.innerHTML = `
+                    <ion-icon name="qr-code-outline" class="h-6 w-6"></ion-icon>
+                    <span>Gerar PIX e Enviar Pedido</span>
+                `;
+            } else { // 'cc'
+                tabCC.classList.add('payment-tab-selected');
+                tabPix.classList.remove('payment-tab-selected');
+                detailsCC.classList.remove('hidden');
+                detailsPix.classList.add('hidden');
+                finishBtn.innerHTML = `
+                    <ion-icon name="shield-checkmark-outline" class="h-6 w-6"></ion-icon>
+                    <span>Finalizar Pedido com Cartão</span>
+                `;
+            }
+
+            // Atualiza o resumo (para aplicar/remover desconto PIX)
+            renderCheckoutSummary();
+        }
+
+        /** NOVO: Gera as opções de parcelamento */
+        function updateInstallmentOptions(total) {
+            const select = document.getElementById('installment-options');
+            if (!select) return;
+
+            let optionsHtml = '';
+            const interestRate = 0.015; // 1.5% de juros ao mês (exemplo)
+
+            // 1x e 2x sem juros
+            optionsHtml += `<option value="1">1x de ${formatCurrency(total)} (Sem juros)</option>`;
+            optionsHtml += `<option value="2">2x de ${formatCurrency(total / 2)} (Sem juros)</option>`;
+
+            // 3x a 12x com juros (simples, só para exemplo)
+            for (let i = 3; i <= 12; i++) {
+                const totalWithInterest = total * (1 + interestRate * i);
+                const installmentValue = totalWithInterest / i;
+                optionsHtml += `<option value="${i}">${i}x de ${formatCurrency(installmentValue)} (Com juros)</option>`;
+            }
+
+            select.innerHTML = optionsHtml;
+        }
+
+        /** ATUALIZAÇÃO: Renderiza o resumo do checkout (com frete e descontos) */
+        function renderCheckoutSummary() {
+            const itemsContainer = document.getElementById('checkout-summary-items');
+            const totalContainer = document.getElementById('checkout-summary-total');
+
+            if (!itemsContainer || !totalContainer) return;
+            
+            if (cart.length === 0) {
+                itemsContainer.innerHTML = '<p class="text-gray-500 text-center py-8">Seu carrinho está vazio.</p>';
+                totalContainer.innerHTML = '';
+                showPage('page-cart'); 
+                return;
+            }
+
+            // Renderiza Itens
+            let itemsHtml = '';
+            cart.forEach(item => {
+                itemsHtml += `
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-700">${item.name} (x${item.quantity})</span>
+                        <span class="font-medium text-gray-900">${formatCurrency(item.price * item.quantity)}</span>
+                    </div>
+                `;
+            });
+            itemsContainer.innerHTML = itemsHtml;
+
+            // Cálculos
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const { discountAmount, discountLabel } = getProgressiveDiscount(subtotal);
+            const shippingCost = selectedShipping.cost;
+            
+            let total = subtotal - discountAmount + shippingCost;
+            let pixDiscountAmount = 0;
+            let pixDiscountLabel = '';
+
+            // Aplica desconto PIX se selecionado
+            if (selectedPaymentMethod === 'pix') {
+                pixDiscountAmount = (subtotal - discountAmount) * PIX_DISCOUNT_RATE; // Desconto PIX sobre o subtotal já com desconto progressivo
+                pixDiscountLabel = `Desconto PIX (${(PIX_DISCOUNT_RATE * 100)}%)`;
+                total = total - pixDiscountAmount;
+            }
+
+            // Renderiza Totais
+            totalContainer.innerHTML = `
+                <div class="flex justify-between items-center text-sm mb-1">
+                    <span class="text-gray-700">Subtotal</span>
+                    <span class="font-medium text-gray-900">${formatCurrency(subtotal)}</span>
+                </div>
+                
+                ${discountAmount > 0 ? `
+                <div class="flex justify-between items-center text-sm mb-1">
+                    <span class="text-green-600 font-medium">${discountLabel}</span>
+                    <span class="font-medium text-green-600">-${formatCurrency(discountAmount)}</span>
+                </div>
+                ` : ''}
+
+                <div class="flex justify-between items-center text-sm mb-1">
+                    <span class="text-gray-700">Frete</span>
+                    <span class="font-medium text-gray-900">${selectedShipping.label === 'A calcular' ? selectedShipping.label : formatCurrency(shippingCost)}</span>
+                </div>
+
+                ${pixDiscountAmount > 0 ? `
+                <div class="flex justify-between items-center text-sm mb-1">
+                    <span class="text-green-600 font-medium">${pixDiscountLabel}</span>
+                    <span class="font-medium text-green-600">-${formatCurrency(pixDiscountAmount)}</span>
+                </div>
+                ` : ''}
+
+                <div class="border-t border-gray-200 pt-3 mt-3">
+                    <div class="flex justify-between items-center text-xl font-bold text-gray-900">
+                        <span>Total</span>
+                        <span>${formatCurrency(total)}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Atualiza as opções de parcelamento com o novo total
+            updateInstallmentOptions(total);
+        }
+        
+        /** ATUALIZAÇÃO: Finaliza o pedido (com frete, pagamento e parcelamento) */
+        function placeOrder() {
+            // Valida formulários de contato e entrega
+            const contactForm = document.getElementById('checkout-form-contact');
+            const shippingForm = document.getElementById('checkout-form-shipping');
+            
+            if (!contactForm.checkValidity() || !shippingForm.checkValidity()) {
+                contactForm.reportValidity();
+                shippingForm.reportValidity();
+                showToast("Preencha todos os dados de contato e entrega.");
+                return;
+            }
+
+            // Valida se o frete foi selecionado
+            if (selectedShipping.label === 'A calcular' && cart.length > 0) {
+                showToast("Por favor, calcule e selecione o frete.");
+                return;
+            }
+
+            // Pega dados dos formulários
+            const name = document.getElementById('checkout-name').value;
+            const phone = document.getElementById('checkout-phone').value;
+            const email = document.getElementById('checkout-email').value;
+            const address = document.getElementById('checkout-address').value;
+            
+            const orderCode = `ORION-${Date.now().toString().slice(-6)}`;
+            
+            // Cálculos
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const { discountAmount, discountLabel } = getProgressiveDiscount(subtotal);
+            const shippingCost = selectedShipping.cost;
+            
+            let total = subtotal - discountAmount + shippingCost;
+            let pixDiscountAmount = 0;
+            
+            // Monta a mensagem do pedido
+            let message = `*Novo Pedido - Orion Fitness* 🏋️‍♂️\n\n`;
+            message += `*Cód. Pedido:* ${orderCode}\n\n`;
+            message += `*Cliente:* ${name}\n`;
+            message += `*WhatsApp:* ${phone}\n`;
+            message += `*Email:* ${email}\n`;
+            message += `*Endereço:* ${address}\n\n`;
+            message += `*--- ITENS DO PEDIDO ---*\n`;
+            
+            cart.forEach(item => {
+                message += `• ${item.name} (Qtd: ${item.quantity}) - ${formatCurrency(item.price * item.quantity)}\n`;
+            });
+            
+            message += `\n*Subtotal:* ${formatCurrency(subtotal)}\n`;
+            
+            if (discountAmount > 0) {
+                message += `*Desconto (${discountLabel}):* -${formatCurrency(discountAmount)}\n`;
+            }
+
+            message += `*Frete (${selectedShipping.label}):* ${formatCurrency(shippingCost)}\n`;
+
+            // Adiciona informações de Pagamento
+            if (selectedPaymentMethod === 'pix') {
+                pixDiscountAmount = (subtotal - discountAmount) * PIX_DISCOUNT_RATE;
+                total = total - pixDiscountAmount;
+                message += `*Desconto PIX:* -${formatCurrency(pixDiscountAmount)}\n`;
+                message += `\n*MÉTODO PAGAMENTO: PIX*\n`;
+            } else {
+                const installmentSelect = document.getElementById('installment-options');
+                const installmentText = installmentSelect.options[installmentSelect.selectedIndex].text;
+                message += `\n*MÉTODO PAGAMENTO: Cartão de Crédito*\n`;
+                message += `*Parcelamento:* ${installmentText}\n`;
+            }
+
+            message += `\n*TOTAL DO PEDIDO: ${formatCurrency(total)}*\n\n`;
+            message += `(Aguardando confirmação de pagamento e envio)`;
+
+            // Abre WhatsApp
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${adminWhatsAppNumber}?text=${encodedMessage}`, '_blank');
+
+            // Limpa o carrinho
+            cart = [];
+            updateCartUI(); 
+
+            // Prepara a página de confirmação
+            document.getElementById('order-code').innerText = orderCode;
+            const confDefault = document.getElementById('confirmation-details');
+            const confPix = document.getElementById('confirmation-pix-details');
+            
+            if (selectedPaymentMethod === 'pix') {
+                confDefault.classList.add('hidden');
+                confPix.classList.remove('hidden');
+            } else {
+                confDefault.classList.remove('hidden');
+                confPix.classList.add('hidden');
+            }
+            
+            showPage('page-confirmation');
+        }
+
+        // --- LÓGICA DO MODAL DE OFERTAS (NOVO) ---
+
+        /** Abre o modal de ofertas e renderiza os produtos */
+        function openOffersModal() {
+            const modal = document.getElementById('offers-modal');
+            const panel = document.getElementById('offers-modal-panel');
+            const contentContainer = document.getElementById('offers-modal-content');
+            if (!modal || !panel || !contentContainer) return;
+
+            // Filtra produtos que têm a propriedade discountPercent
+            const offerProducts = products.filter(p => p.discountPercent && p.discountPercent > 0);
+            
+            if (offerProducts.length === 0) {
+                contentContainer.innerHTML = '<p class="text-gray-600 text-center py-6">Nenhuma oferta especial disponível no momento. Volte em breve!</p>';
+            } else {
+                let html = '';
+                offerProducts.forEach(product => {
+                    // Calcula o novo preço
+                    const newPrice = product.price * (1 - product.discountPercent / 100);
+                    html += `
+                        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-lg border">
+                            <img src="${product.image}" alt="${product.name}" class="w-16 h-16 object-cover rounded-md flex-shrink-0">
+                            <div class="flex-grow">
+                                <h4 class="font-semibold text-gray-900">${product.name}</h4>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-lg font-bold text-red-700">${formatCurrency(newPrice)}</span>
+                                    <span class="text-sm text-gray-500 line-through">${formatCurrency(product.price)}</span>
+                                </div>
+                            </div>
+                            <button onclick="addToCart(${product.id}); closeOffersModal();" class="bg-red-700 hover:bg-red-800 text-white font-semibold py-1.5 px-3 rounded-md text-sm">
+                                Adicionar
+                            </button>
+                        </div>
+                    `;
+                });
+                contentContainer.innerHTML = html;
+            }
+
+            // ATUALIZAÇÃO: Lógica de animação de entrada
+            // 1. Tira o display:none para que o elemento exista
+            modal.classList.remove('hidden');
+
+            // 2. Usa requestAnimationFrame para garantir que a próxima mudança
+            //    ocorra no próximo "frame", acionando a animação.
+            requestAnimationFrame(() => {
+                // 3. Remove as classes de invisibilidade para animar a entrada
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                panel.classList.remove('opacity-0', 'scale-95');
+            });
+        }
+
+        /** Fecha o modal de ofertas */
+        function closeOffersModal() {
+            const modal = document.getElementById('offers-modal');
+            const panel = document.getElementById('offers-modal-panel');
+            if (!modal || !panel) return;
+
+            // ATUALIZAÇÃO: Lógica de animação de saída
+            // 1. Adiciona as classes de invisibilidade para animar a saída
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            panel.classList.add('opacity-0', 'scale-95');
+
+            // 2. Após a animação (300ms), aplica 'hidden' (display: none)
+            //    e limpa o conteúdo para a próxima vez.
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                
+                const contentContainer = document.getElementById('offers-modal-content');
+                if (contentContainer) {
+                    contentContainer.innerHTML = ''; // Limpa o conteúdo
+                }
+            }, 300); // Deve corresponder à duração da transição (duration-300)
+        }
+
+        // --- NOVO: LÓGICA DAS ABAS DE LOGIN/CADASTRO ---
+        function showLoginTab(tabName) {
+            const loginBtn = document.getElementById('login-tab-btn');
+            const registerBtn = document.getElementById('register-tab-btn');
+            const loginForm = document.getElementById('login-form-container');
+            const registerForm = document.getElementById('register-form-container');
+
+            if (!loginBtn || !registerBtn || !loginForm || !registerForm) return;
+
+            if (tabName === 'login') {
+                // Ativa aba de login
+                loginBtn.classList.add('text-red-700', 'border-red-700');
+                loginBtn.classList.remove('text-gray-500', 'hover:text-gray-700');
+                // Desativa aba de cadastro
+                registerBtn.classList.add('text-gray-500', 'hover:text-gray-700');
+                registerBtn.classList.remove('text-red-700', 'border-red-700');
+                // Mostra/Esconde formulários
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+            } else {
+                // Ativa aba de cadastro
+                registerBtn.classList.add('text-red-700', 'border-red-700');
+                registerBtn.classList.remove('text-gray-500', 'hover:text-gray-700');
+                // Desativa aba de login
+                loginBtn.classList.add('text-gray-500', 'hover:text-gray-700');
+                loginBtn.classList.remove('text-red-700', 'border-red-700');
+                // Mostra/Esconde formulários
+                registerForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            }
+        }
+
+        // --- LÓGICA DO CARROSSEL (Removida) ---
+        // Toda a lógica 'initializeCarousel' e relacionadas foi removida
+        // para dar lugar ao novo Hero de banners estáticos.
+
+        // --- INICIALIZAÇÃO DA APLICAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Renderiza os produtos nas listas
+            renderProductList();
+            renderFeaturedProducts();
+            renderNewReleases(); 
+
+            // --- Configura os botões do CHECKOUT NOVO ---
+            
+            // Botão de confirmar pedido
+            const finishBtn = document.getElementById('finish-order-btn');
+            if(finishBtn) {
+                finishBtn.addEventListener('click', placeOrder);
+            }
+
+            // Botão de calcular frete
+            const calcShippingBtn = document.getElementById('calculate-shipping-btn');
+            if (calcShippingBtn) {
+                calcShippingBtn.addEventListener('click', calculateShipping);
+            }
+            // --- Fim dos botões de checkout ---
+
+
+            // --- NOVO: Lógica do Menu Mobile ---
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Define a página inicial
+            showPage('page-home');
+            
+            // REMOÇÃO: Botão flutuante global do WhatsApp removido.
+        });
+
+    </script>
+
+    <!-- REMOÇÃO: O botão flutuante global foi removido, pois agora está em cada card. -->
+
+</body>
+</html>
