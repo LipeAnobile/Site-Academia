@@ -44,6 +44,39 @@
             @apply bg-red-50 border-red-700 text-red-700;
         }
 
+        /* NOVO: Animação da Esteira de Logos */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            /* Move o container para a esquerda até que o segundo grupo de logos comece */
+            100% { transform: translateX(-50%); } 
+        }
+        .animate-scroll {
+            /* A animação 'scroll' dura 40s, é linear e infinita.
+              O 'width: 200%' é porque duplicamos os logos para o efeito ser contínuo.
+            */
+            width: 200%;
+            animation: scroll 40s linear infinite;
+        }
+
+        /* NOVO: Estilo para mostrar o botão "Voltar ao Topo" */
+        #back-to-top-btn.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        /* NOVO: Estilo para o seletor de quantidade no card */
+        .quantity-selector-card {
+            @apply flex items-center border border-gray-300 rounded-md;
+        }
+        .quantity-selector-card button {
+            @apply w-8 h-8 text-lg font-bold text-gray-700 hover:bg-gray-100 rounded-md;
+        }
+        .quantity-selector-card span {
+            @apply w-10 text-center text-base font-medium text-gray-900;
+        }
+
+
         /* REMOÇÃO: 
           - O CSS do botão flutuante global foi removido.
           - O CSS do carrossel antigo foi removido.
@@ -236,7 +269,11 @@
                 </div>
             </section>
 
-            <!-- Seção de Tópicos de Categoria (Mantida, Estilo 'Clean') -->
+            <!-- ============================================= -->
+            <!-- NOVA ORDEM DAS SEÇÕES CONFORME SOLICITADO -->
+            <!-- ============================================= -->
+
+            <!-- 1. ÍCONES DE CATEGORIA -->
             <section id="topic-categories" class="mb-12">
                 <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Navegue por Categoria</h2>
                 <div class="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-4 gap-y-8">
@@ -323,10 +360,57 @@
                 </div>
             </section>
 
-            <!-- Seção de Banners de Categoria (Removida para um layout mais 'clean') -->
-            <!-- <section id="category-banners" class="mb-12"> ... </section> -->
+            <!-- 2. LANÇAMENTOS -->
+            <section class="mt-12">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Lançamentos</h2>
+                <div id="new-releases-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    <!-- Lançamentos serão inseridos aqui pelo JS -->
+                </div>
+            </section>
 
-            <!-- Seção de Produtos em Destaque -->
+            <!-- 
+              3. MINI BANNERS
+            -->
+            <section id="mini-banners" class="my-12"> <!-- Ajustado margin (my-12) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Mini Banner 1: Planos de Treino -->
+                    <a href="#" onclick="showPage('page-team');" class="cursor-pointer relative bg-gray-800 rounded-lg shadow-lg overflow-hidden group p-8 flex items-center min-h-[200px]">
+                        <!-- Imagem de fundo -->
+                        <img src="https://i.postimg.cc/R0hN223G/carlos.png" alt="Planos de Treino" class="absolute inset-0 w-full h-full object-cover opacity-30 transition-all duration-300 group-hover:opacity-40 group-hover:scale-105" loading="lazy">
+                        
+                        <!-- Conteúdo de Texto (REMOVIDO) -->
+                        <!-- 
+                        <div class="relative z-10">
+                            <h3 class="text-white text-3xl font-bold mb-3 uppercase">Planos de Treino</h3>
+                            <p class="text-gray-200 mb-5">Conheça nossos coaches e comece sua transformação.</p>
+                            <span class="bg-red-700 hover:bg-red-800 text-white font-semibold py-2.5 px-5 rounded-md transition-colors duration-300">
+                                Saiba Mais
+                            </span>
+                        </div>
+                        -->
+                    </a>
+                    
+                    <!-- Mini Banner 2: Nutrição -->
+                    <a href="#" onclick="showPage('page-team');" class="cursor-pointer relative bg-gray-800 rounded-lg shadow-lg overflow-hidden group p-8 flex items-center min-h-[200px]">
+                        <!-- Imagem de fundo -->
+                        <img src="https://i.postimg.cc/9Qr222px/juliana.png" alt="Consultoria Nutricional" class="absolute inset-0 w-full h-full object-cover opacity-30 transition-all duration-300 group-hover:opacity-40 group-hover:scale-105" loading="lazy">
+
+                        <!-- Conteúdo de Texto (REMOVIDO) -->
+                        <!--
+                        <div class="relative z-10">
+                            <h3 class="text-white text-3xl font-bold mb-3 uppercase">Consultoria Nutricional</h3>
+                            <p class="text-gray-200 mb-5">Monte sua dieta focada em performance e saúde.</p>
+                            <span class="bg-white hover:bg-gray-200 text-gray-900 font-semibold py-2.5 px-5 rounded-md transition-colors duration-300">
+                                Começar Jornada
+                            </span>
+                        </div>
+                        -->
+                    </a>
+                </div>
+            </section>
+
+            <!-- 4. PRODUTOS MAIS VENDIDOS -->
             <section>
                 <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Nossos Produtos Mais Vendidos</h2>
                 <!-- ATUALIZAÇÃO: A grade de produtos agora será renderizada pelo JS com o novo design -->
@@ -335,15 +419,64 @@
                 </div>
             </section>
 
-            <!-- Seção: Lançamentos -->
-            <section class="mt-12">
-                <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Lançamentos</h2>
-                <div id="new-releases-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                    <!-- Lançamentos serão inseridos aqui pelo JS -->
+            <!-- 5. ESTEIRA DE MARCAS (NOVO) -->
+            <section id="brands-carousel" class="mt-12">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Nossas Principais Marcas</h2>
+                <!-- 
+                  Container da esteira 
+                  overflow-hidden: Esconde os logos fora da área visível
+                -->
+                <div class="w-full overflow-hidden bg-white py-6 border-y border-gray-200">
+                    <!-- 
+                      Container dos logos (duplicado para efeito de scroll infinito)
+                      flex flex-nowrap: Garante que os itens fiquem em linha única
+                      animate-scroll: Aplica a animação definida no CSS
+                    -->
+                    <div class="flex flex-nowrap animate-scroll items-center">
+                        <!-- Logos (Grupo 1) - Ajustado o padding horizontal (mx-10) -->
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Optimum+Nutrition" alt="Logo Optimum Nutrition" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Dux+Nutrition" alt="Logo Dux Nutrition" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Max+Titanium" alt="Logo Max Titanium" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Integralmedica" alt="Logo Integralmedica" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Black+Skull" alt="Logo Black Skull" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Growth" alt="Logo Growth" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+
+                        <!-- Logos (Grupo 2 - Duplicata para scroll) -->
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Optimum+Nutrition" alt="Logo Optimum Nutrition" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Dux+Nutrition" alt="Logo Dux Nutrition" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Max+Titanium" alt="Logo Max Titanium" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Integralmedica" alt="Logo Integralmedica" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Black+Skull" alt="Logo Black Skull" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+                        <div class="flex-shrink-0 mx-10">
+                            <img src="https://placehold.co/150x50/f9fafb/6b7280?text=Growth" alt="Logo Growth" class="h-8 md:h-10 w-auto" loading="lazy">
+                        </div>
+                    </div>
                 </div>
             </section>
-
-            <!-- Seção: Mapa de Localização -->
+            
+            <!-- 6. LOCALIZAÇÃO (Era a 5) -->
             <section id="location-map" class="mt-12">
                 <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Nossa Localização</h2>
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden p-1.5">
@@ -382,14 +515,17 @@
             </div>
         </div>
 
-        <!-- ===== PÁGINA: DETALHES DO PRODUTO ===== -->
+        <!-- ===== PÁGINA: DETALHES DO PRODUTO (ATUALIZADA) ===== -->
         <div id="page-details" class="page-content hidden">
-            <button onclick="showProductPage(currentCategoryFilter)" class="mb-6 text-red-700 hover:text-red-800 font-medium flex items-center gap-2">
-                <ion-icon name="chevron-back-outline"></ion-icon>
-                Voltar aos produtos
-            </button>
-            <div id="product-detail-content" class="grid grid-cols-1 md:grid-cols-2 gap-10 bg-white p-6 md:p-8 rounded-lg">
-                <!-- Detalhes do produto serão inseridos aqui pelo JS -->
+            <!-- 
+              ATUALIZAÇÃO: 
+              - O botão "Voltar" foi removido. A navegação será feita pelos "breadcrumbs"
+                que serão gerados pelo JS.
+              - As classes de padding/bg/rounded foram removidas do container, 
+                pois o novo layout (gerado pelo JS) cuidará disso.
+            -->
+            <div id="product-detail-content" class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                <!-- Detalhes do produto (com o novo layout) serão inseridos aqui pelo JS -->
             </div>
         </div>
 
@@ -747,12 +883,43 @@
             </div>
         </div>
 
-        <!-- ===== PÁGINA: CONTATO ===== -->
+        <!-- ===== PÁGINA: CONTATO (ATUALIZADA) ===== -->
         <div id="page-contact" class="page-content hidden">
-            <h1 class="text-3xl font-bold mb-8 text-center text-gray-900">Entre em Contato</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-center mb-12 text-gray-900">Entre em Contato</h1>
+            
+            <!-- NOVO: Cartões de Contato Rápido -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-5xl mx-auto">
+                <!-- WhatsApp -->
+                <a href="https://wa.me/5519981617860" target="_blank" class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4 transition-all duration-300 hover:shadow-lg hover:border-red-700">
+                    <ion-icon name="logo-whatsapp" class="h-10 w-10 text-green-500 flex-shrink-0"></ion-icon>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">WhatsApp</h3>
+                        <p class="text-gray-700">(19) 98161-7860</p>
+                    </div>
+                </a>
+                <!-- Email -->
+                <a href="mailto:mdttrivelato@gmail.com" class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4 transition-all duration-300 hover:shadow-lg hover:border-red-700">
+                    <ion-icon name="mail-outline" class="h-10 w-10 text-red-700 flex-shrink-0"></ion-icon>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Email</h3>
+                        <p class="text-gray-700">mdttrivelato@gmail.com</p>
+                    </div>
+                </a>
+                <!-- Endereço -->
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                    <ion-icon name="location-outline" class="h-10 w-10 text-blue-500 flex-shrink-0"></ion-icon>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Endereço</h3>
+                        <p class="text-gray-700">R. Teodoro Guedes de Campos, 262</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulário e Mapa Lado a Lado -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                 <!-- Formulário de Contato -->
-                <div class="bg-white p-8 rounded-lg border border-gray-200">
+                <div class="bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-900">Mande uma mensagem</h2>
                     <form class="space-y-4">
                         <div>
                             <label for="contact-name" class="block text-sm font-medium text-gray-700">Nome</LabeL>
@@ -771,32 +938,22 @@
                         </button>
                     </form>
                 </div>
-                <!-- Informações de Contato -->
-                <div class="space-y-6">
-                    <div class="bg-white p-6 rounded-lg border border-gray-200 flex items-start space-x-4">
-                        <ion-icon name="location-outline" class="h-8 w-8 text-red-700 mt-1"></ion-icon>
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Endereço</h3>
-                            <p class="text-gray-700">R. Teodoro Guedes de Campos, 262 - Parque Santa Bárbara<br>Campinas, SP - 13064-590</p>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg border border-gray-200 flex items-start space-x-4">
-                        <ion-icon name="call-outline" class="h-8 w-8 text-red-700 mt-1"></ion-icon>
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Telefone / WhatsApp</h3>
-                            <p class="text-gray-700">(19) 98161-7860</p>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg border border-gray-200 flex items-start space-x-4">
-                        <ion-icon name="mail-outline" class="h-8 w-8 text-red-700 mt-1"></ion-icon>
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Email</h3>
-                            <p class="text-gray-700">mdttrivelato@gmail.com</p>
-                        </div>
-                    </div>
+                <!-- Mapa (Integrado) -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-1.5">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2448.866251442529!2d-47.14759!3d-22.89139!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94c90f8c24c4d5b9%3A0xb999e2e4d0d2652e!2sR.%20Teodoro%20Guedes%20de%20Campos%2C%20262%20-%20Parque%20Santa%20B%C3%A1rbara%2C%20Campinas%20-%20SP%2C%2013064-590!5e0!3m2!1spt-BR!2sbr!4v0000000000000" 
+                        width="100%" 
+                        height="450" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        class="rounded-md w-full h-full min-h-[400px]">
+                    </iframe>
                 </div>
             </div>
         </div>
+
 
         <!-- ===== PÁGINA: EQUIPE (✅) ===== -->
         <div id="page-team" class="page-content hidden">
@@ -1069,7 +1226,105 @@
                 featured: false,
                 isNew: true, 
                 category: 'roupas'
+            },
+            // --- NOVOS PRODUTOS ADICIONADOS ---
+            {
+                id: 11,
+                name: "Multivitamínico A-Z (90 cáps)",
+                price: 59.90,
+                description: "Complexo vitamínico completo de A a Z. Essencial para o sistema imunológico e fornecimento de energia.",
+                image: "https://i.postimg.cc/90GwXTYb/vitaminas.png", // Imagem reutilizada
+                featured: false,
+                isNew: true,
+                category: 'suplementos'
+            },
+            {
+                id: 12,
+                name: "Whey Protein Isolado (900g)",
+                price: 249.90,
+                description: "Proteína isolada de rápida absorção, zero carboidratos e zero gordura. Ideal para definição muscular.",
+                image: "https://i.postimg.cc/3J7GwS08/dasd.png", // Imagem reutilizada
+                featured: true,
+                category: 'suplementos',
+                discountPercent: 15
+            },
+            {
+                id: 13,
+                name: "Straps de Levantamento",
+                price: 45.00,
+                description: "Aumente sua capacidade de carga em exercícios de puxada, como levantamento terra e remadas. Protege os pulsos.",
+                image: "https://placehold.co/600x600/f1f5f9/94a3b8?text=Straps",
+                featured: false,
+                category: 'acessorios'
+            },
+            {
+                id: 14,
+                name: "Bermuda de Treino Masculina",
+                price: 99.90,
+                description: "Bermuda leve em tactel, com bolsos e cordão ajustável. Perfeita para treinos de perna.",
+                image: "https://placehold.co/600x600/f1f5f9/94a3b8?text=Bermuda",
+                featured: false,
+                isNew: true,
+                category: 'roupas'
+            },
+            {
+                id: 15,
+                name: "Pasta de Amendoim (1kg)",
+                price: 39.90,
+                description: "Fonte natural de energia e proteína. Integral, sem açúcar e sem glúten. Sabor delicioso.",
+                image: "https://placehold.co/600x600/f1f5f9/94a3b8?text=Pasta+Amendoim",
+                featured: true,
+                category: 'suplementos'
+            },
+            {
+                id: 16,
+                name: "Joelheira de Compressão (Par)",
+                price: 85.00,
+                description: "Oferece suporte e estabilidade para os joelhos durante agachamentos e outros exercícios de impacto.",
+                image: "https://placehold.co/600x600/f1f5f9/94a3b8?text=Joelheira",
+                featured: false,
+                category: 'acessorios'
+            },
+            {
+                id: 17,
+                name: "Top Fitness Feminino",
+                price: 79.90,
+                description: "Top com alta sustentação e bojo removível. Conforto e estilo para seus treinos.",
+                image: "https://placehold.co/600x600/f1f5f9/94a3b8?text=Top+Fitness",
+                featured: false,
+                isNew: true,
+                category: 'roupas'
+            },
+            {
+                id: 18,
+                name: "Glutamina Micronizada (300g)",
+                price: 69.90,
+                description: "Aminoácido essencial para a saúde intestinal e recuperação do sistema imunológico após treinos intensos.",
+                image: "https://placehold.co/600x600/f1f5f9/94a3b8?text=Glutamina",
+                featured: false,
+                category: 'suplementos'
+            },
+            {
+                id: 19,
+                name: "Corda de Pular Speed Rope",
+                price: 55.00,
+                description: "Corda de pular profissional com rolamentos para alta velocidade. Ideal para cardio e treinos de crossfit.",
+                image: "https://placehold.co/600x600/f1f5f9/94a3b8?text=Corda",
+                featured: false,
+                category: 'acessorios'
+            },
+            {
+                id: 20,
+                name: "Hipercalórico (3kg)",
+                price: 139.90,
+                description: "Ganhe peso e massa muscular com este blend de carboidratos e proteínas de alta qualidade. Sabor chocolate.",
+                image: "https://placehold.co/600x600/f1f5f9/94a3b8?text=Hipercal%C3%B3rico",
+                featured: true,
+                isNew: true,
+                category: 'suplementos',
+                discountPercent: 5
             }
+            // --- FIM DOS NOVOS PRODUTOS ---
         ];
 
         // --- ESTADO DA APLICAÇÃO ---
@@ -1087,6 +1342,9 @@
         let selectedShipping = { cost: 0, label: 'A calcular' };
         let selectedPaymentMethod = 'cc'; // 'cc' (Cartão) ou 'pix'
         const PIX_DISCOUNT_RATE = 0.10; // 10% de desconto no PIX
+        
+        // NOVO: Estado da Quantidade na Página de Detalhes
+        let detailQuantity = 1;
 
         // --- FUNÇÃO GLOBAL DE NAVEGAÇÃO ---
         function showPage(pageId) {
@@ -1179,10 +1437,19 @@
             }, 3000); // 3 segundos
         }
 
+        /** NOVO: Rola a página suavemente para o topo */
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
         /** * ATUALIZAÇÃO CRÍTICA: Cria o HTML para um card de produto
          * - Novo layout 'clean' (estilo Dafy).
          * - Adiciona badges (Novo, % OFF).
          * - Adiciona ícone de WhatsApp individual.
+         * - ADICIONA SELETOR DE QUANTIDADE, PARCELAMENTO e PREÇO PIX.
         */
         function createProductCard(product) {
             
@@ -1199,19 +1466,15 @@
                 badgeHtml = `<span class="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-2.5 py-0.5 rounded-md z-10">Novo</span>`;
             }
 
-            // --- Estrutura HTML do Card 'Clean' ---
+            // --- NOVO: Cálculos de Preço (Parcela e PIX) ---
+            const installmentPrice = formatCurrency(product.price / 3); // 3x sem juros
+            const pixPrice = formatCurrency(product.price * 0.95); // 5% PIX discount
+
+            // --- Estrutura HTML do Card (Totalmente Atualizada) ---
             return `
-                <!-- 
-                  ATUALIZAÇÃO UX/UI: 
-                  - Card 'premium clean' com borda e sombra suave.
-                  - Imagem aspect-[1/1] para uniformidade.
-                  - Efeito de hover suave (hover:shadow-lg).
-                  - Badges promocionais (Novo, % OFF).
-                  - Botão de WhatsApp individual por produto.
-                -->
                 <div class="relative bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden group transition-all duration-300 hover:shadow-lg">
                     
-                    <!-- Link principal do card -->
+                    <!-- Link principal do card (sem o botão) -->
                     <a href="#" class="cursor-pointer" onclick="event.preventDefault(); showProductDetails(${product.id});">
                         ${badgeHtml}
                         <div class="overflow-hidden rounded-t-lg">
@@ -1219,26 +1482,38 @@
                                  class="w-full aspect-[1/1] object-cover bg-gray-50 transition-transform duration-300 group-hover:scale-105" 
                                  loading="lazy">
                         </div>
+                        
+                        <!-- NOVO: Seção de Preço Atualizada -->
                         <div class="p-4">
                             <h3 class="text-base font-medium text-gray-800 truncate mb-1" title="${product.name}">${product.name}</h3>
+                            
+                            <!-- Preços -->
                             <p class="text-xl font-bold text-gray-900 mt-2">${formatCurrency(product.price)}</p>
+                            <p class="text-sm text-gray-600">até <strong>3x de ${installmentPrice}</strong> sem juros</p>
+                            <div class="mt-2">
+                                <span class="font-bold text-lg text-green-700">${pixPrice}</span>
+                                <span class="text-sm text-gray-600"> via PIX</span>
+                            </div>
                         </div>
                     </a>
                     
-                    <!-- Ações -->
-                    <div class="p-4 pt-0">
-                         <button class="w-full bg-red-700 hover:bg-red-800 text-white font-semibold py-2.5 px-4 rounded-md transition-colors duration-300" 
-                                 onclick="event.stopPropagation(); addToCart(${product.id});">
-                            Adicionar ao carrinho
+                    <!-- NOVO: Ações com Seletor de Quantidade -->
+                    <div class="p-4 pt-0 flex items-center gap-3">
+                        <!-- Seletor de Quantidade -->
+                        <div class="quantity-selector-card">
+                            <button onclick="changeProductCardQuantity(${product.id}, -1, event)" aria-label="Diminuir quantidade">-</button>
+                            <span id="card-qty-${product.id}" aria-live="polite">1</span>
+                            <button onclick="changeProductCardQuantity(${product.id}, 1, event)" aria-label="Aumentar quantidade">+</button>
+                        </div>
+                        
+                        <!-- Botão Comprar -->
+                        <button class="flex-1 bg-red-700 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300" 
+                                 onclick="buyNow(${product.id}, event)">
+                            Comprar
                         </button>
                     </div>
                     
-                    <!-- 
-                      NOVO RECURSO: Botão WhatsApp por produto.
-                      - ATUALIZADO: Movido para o canto superior direito (top-3 right-3).
-                      - Cor verde padrão do WhatsApp (#25D366).
-                      - Link dinâmico com o nome do produto.
-                    -->
+                    <!-- Botão WhatsApp por produto (Mantido) -->
                     <a href="${whatsappLink}" 
                        target="_blank" 
                        class="absolute top-3 right-3 bg-green-500 text-white p-2.5 rounded-full shadow-lg cursor-pointer hover:bg-green-600 transition-all transform hover:scale-110 z-10 flex items-center justify-center" 
@@ -1249,6 +1524,7 @@
                 </div>
             `;
         }
+        
         
         /** Renderiza a lista de todos os produtos */
         function renderProductList(categoryFilter = null) {
@@ -1297,52 +1573,236 @@
             grid.innerHTML = html;
         }
 
-        /** Renderiza a página de detalhes de um produto */
+        /** * ATUALIZAÇÃO: Renderiza a página de detalhes de um produto
+         * Esta função foi totalmente refeita para se assemelhar ao layout da "Dafy Store"
+         * ADICIONA SELETOR DE QUANTIDADE e PARCELAMENTO.
+         */
         function showProductDetails(productId) {
             const product = products.find(p => p.id === productId);
             if (!product) return;
 
             const container = document.getElementById('product-detail-content');
-            container.innerHTML = `
-                <!-- Coluna da Imagem -->
-                <div class="bg-gray-50 border border-gray-200 p-6 rounded-lg flex items-center justify-center">
-                    <img src="${product.image}" alt="${product.name}" class="max-w-full h-auto max-h-96 object-contain" loading="lazy">
+            
+            // --- Pré-cálculos ---
+            const pixPrice = product.price * 0.95; // 5% PIX discount
+            const productCode = product.id.toString().padStart(4, '0');
+            const installmentPrice = formatCurrency(product.price / 3); // 3x sem juros
+            
+            // Link do WhatsApp para "Comprar pelo WhatsApp"
+            const whatsappBuyMessage = encodeURIComponent(`Olá! Tenho interesse em comprar o produto: ${product.name} (Cód: #${productCode}). Podemos continuar?`);
+            const whatsappBuyLink = `https://wa.me/${adminWhatsAppNumber}?text=${whatsappBuyMessage}`;
+
+            // Links para "Compartilhar"
+            const shareMessage = encodeURIComponent(`Confira este produto incrível: ${product.name} - ${window.location.href}`);
+            const whatsappShareLink = `https://api.whatsapp.com/send?text=${shareMessage}`;
+            const facebookShareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+            
+            // Breadcrumbs dinâmicos
+            const categoryName = product.category.charAt(0).toUpperCase() + product.category.slice(1);
+
+            // NOVO: Reseta a quantidade da página de detalhes
+            detailQuantity = 1;
+
+            // --- Novo HTML baseado no layout da "Dafy Store" ---
+            const html = `
+                <!-- Coluna da Imagem (Esquerda) -->
+                <div class="flex flex-col-reverse md:flex-row gap-4">
+                    <!-- Thumbnails (Vertical) -->
+                    <div class="flex md:flex-col gap-2 justify-center md:justify-start">
+                        <!-- 
+                          NOTA: O produto só tem 1 imagem. 
+                          Para simular a galeria, estou repetindo a imagem e adicionando placeholders.
+                        -->
+                        <img src="${product.image}" alt="Thumbnail 1" class="w-16 h-16 object-cover rounded-md border-2 border-red-700 cursor-pointer">
+                        <img src="https://placehold.co/100x100/f1f5f9/94a3b8?text=Img+2" alt="Thumbnail 2" class="w-16 h-16 object-cover rounded-md border border-gray-300 cursor-pointer opacity-70 hover:opacity-100">
+                        <img src="https://placehold.co/100x100/f1f5f9/94a3b8?text=Img+3" alt="Thumbnail 3" class="w-16 h-16 object-cover rounded-md border border-gray-300 cursor-pointer opacity-70 hover:opacity-100">
+                    </div>
+                    
+                    <!-- Imagem Principal -->
+                    <div class="flex-1 bg-white border border-gray-200 p-4 rounded-lg flex items-center justify-center aspect-square">
+                        <img src="${product.image}" alt="${product.name}" class="max-w-full h-auto max-h-96 md:max-h-full object-contain" loading="lazy">
+                    </div>
                 </div>
                 
-                <!-- Coluna de Informações -->
-                <div class="flex flex-col justify-center">
-                    <h1 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">${product.name}</h1>
-                    <p class="text-3xl font-bold text-red-700 mb-6">${formatCurrency(product.price)}</p>
-                    <p class="text-gray-700 leading-relaxed mb-8">${product.description}</p>
-                    <button class="w-full sm:w-auto bg-red-700 hover:bg-red-800 text-white font-semibold py-3 px-10 text-lg rounded-md transition-colors duration-300" onclick="addToCart(${product.id})">
-                        Adicionar ao Carrinho
-                    </button>
+                <!-- Coluna de Informações (Direita) -->
+                <div class="flex flex-col">
+                    <!-- Breadcrumbs (como na imagem) -->
+                    <div class="text-sm text-gray-600 mb-2 flex items-center flex-wrap">
+                        <a onclick="showPage('page-home')" class="hover:text-red-700 cursor-pointer">Início</a>
+                        <span class="mx-2">/</span>
+                        <a onclick="showProductPage('${product.category}')" class="hover:text-red-700 cursor-pointer">${categoryName}</a>
+                        <span class="mx-2">/</span>
+                        <span class="text-gray-400 truncate">${product.name}</span>
+                    </div>
+
+                    <h1 class="text-2xl md:text-3xl font-bold mb-2 text-gray-900">${product.name}</h1>
+                    <span class="text-sm text-gray-500 mb-4">Código: #${productCode}</span>
+
+                    <!-- Preços (ATUALIZADO) -->
+                    <div class="mb-5">
+                        <p class="text-3xl font-bold text-gray-900">${formatCurrency(product.price)}</p>
+                        <!-- NOVO: Adicionado parcelamento -->
+                        <p class="text-md text-gray-600">até <strong>3x de ${installmentPrice}</strong> sem juros</p>
+                        
+                        <div class="bg-green-50 border border-green-200 text-green-700 rounded-md px-3 py-1.5 mt-2 inline-block">
+                            <span class="font-bold">${formatCurrency(pixPrice)}</span>
+                            <span class="text-sm"> via PIX</span>
+                            <span class="text-sm font-medium"> (Ganha 5% de desconto)</span>
+                        </div>
+                    </div>
+
+                    <!-- NOVO: Seletor de Quantidade -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade:</label>
+                        <div class="flex items-center border border-gray-300 rounded-md" style="width: 130px;">
+                            <button onclick="changeDetailQuantity(-1)" class="w-10 h-10 text-xl font-bold text-gray-700 hover:bg-gray-100 rounded-l-md" aria-label="Diminuir quantidade">-</button>
+                            <span id="detail-qty" class="flex-1 text-center text-lg font-medium text-gray-900" aria-live="polite">1</span>
+                            <button onclick="changeDetailQuantity(1)" class="w-10 h-10 text-xl font-bold text-gray-700 hover:bg-gray-100 rounded-r-md" aria-label="Aumentar quantidade">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação (ATUALIZADO) -->
+                    <div class="space-y-3 mb-6">
+                        <!-- ATUALIZADO: onclick -->
+                        <button class="w-full bg-red-700 hover:bg-red-800 text-white font-semibold py-3 px-10 text-lg rounded-md transition-colors duration-300 flex items-center justify-center gap-2" 
+                                onclick="buyFromDetail(${product.id})">
+                            <ion-icon name="cart-outline" class="h-6 w-6"></ion-icon>
+                            Adicionar ao Carrinho
+                        </button>
+                        <a href="${whatsappBuyLink}" target="_blank"
+                           class="w-full bg-white hover:bg-green-50 border-2 border-green-500 text-green-600 font-semibold py-3 px-10 text-lg rounded-md transition-colors duration-300 flex items-center justify-center gap-2">
+                            <ion-icon name="logo-whatsapp" class="h-6 w-6"></ion-icon>
+                            Comprar pelo WhatsApp
+                        </a>
+                    </div>
+                    
+                    <!-- Ícones de Pagamento (Estático) -->
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="text-sm font-medium text-gray-700">Pagamento:</span>
+                        <span class="text-sm font-bold text-cyan-600">PIX</span>
+                        <ion-icon name="card-outline" class="h-6 w-6 text-gray-600" title="Visa, Master, Elo"></ion-icon>
+                    </div>
+
+                    <!-- Calculadora de Frete (Estático) -->
+                    <div class="mb-6">
+                        <label for="cep-detail" class="block text-sm font-medium text-gray-700 mb-1">Calcule o frete</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="cep-detail" placeholder="Seu CEP" class="form-input">
+                            <button class="bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-5 rounded-md transition-colors duration-300">OK</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Compartilhar (Estático) -->
+                    <div>
+                        <span class="block text-sm font-medium text-gray-700 mb-2">Compartilhe:</span>
+                        <div class="flex gap-3">
+                            <a href="${whatsappShareLink}" target="_blank" class="text-gray-500 hover:text-green-600 p-2 bg-gray-100 rounded-full transition-colors" title="Compartilhar no WhatsApp">
+                                <ion-icon name="logo-whatsapp" class="h-6 w-6"></ion-icon>
+                            </a>
+                            <a href="${facebookShareLink}" target="_blank" class="text-gray-500 hover:text-blue-700 p-2 bg-gray-100 rounded-full transition-colors" title="Compartilhar no Facebook">
+                                <ion-icon name="logo-facebook" class="h-6 w-6"></ion-icon>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <!-- Seção de Descrição (Movida para baixo e full-width) -->
+                <div class="md:col-span-2 mt-10 pt-8 border-t border-gray-200">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-900">Descrição</h2>
+                    <!-- 
+                    Use 'prose' de tailwind para formatar o texto se ele vier com HTML,
+                    ou apenas deixe o <p> simples.
+                    O 'whitespace-pre-line' preserva as quebras de linha da descrição.
+                    -->
+                    <p class="text-gray-700 leading-relaxed whitespace-pre-line">${product.description}</p>
                 </div>
             `;
+
+            container.innerHTML = html;
             showPage('page-details');
         }
 
+
         // --- LÓGICA DO CARRINHO ---
 
-        /** Adiciona um item ao carrinho */
-        function addToCart(productId) {
+        /** NOVO: Altera a quantidade no seletor do card */
+        function changeProductCardQuantity(productId, delta, event) {
+            event.stopPropagation(); // Impede que o clique ative o link do card
+            const qtySpan = document.getElementById(`card-qty-${productId}`);
+            if (!qtySpan) return;
+            
+            let currentQty = parseInt(qtySpan.innerText, 10);
+            let newQty = currentQty + delta;
+            
+            if (newQty < 1) newQty = 1; // Não permite quantidade menor que 1
+            
+            qtySpan.innerText = newQty;
+        }
+
+        /** NOVO: Compra a partir do card, lendo a quantidade selecionada */
+        function buyNow(productId, event) {
+            event.stopPropagation(); // Impede que o clique ative o link do card
+            const qtySpan = document.getElementById(`card-qty-${productId}`);
+            if (!qtySpan) return;
+
+            const quantity = parseInt(qtySpan.innerText, 10);
+            
+            addToCart(productId, quantity);
+            
+            // Reseta a quantidade no card para 1
+            qtySpan.innerText = '1';
+        }
+
+        /** NOVO: Altera a quantidade no seletor da página de detalhes */
+        function changeDetailQuantity(delta) {
+            const qtySpan = document.getElementById('detail-qty');
+            if (!qtySpan) return;
+            
+            let newQty = detailQuantity + delta;
+            if (newQty < 1) newQty = 1;
+            
+            detailQuantity = newQty; // Atualiza a variável global
+            qtySpan.innerText = detailQuantity;
+        }
+
+        /** NOVO: Compra a partir da página de detalhes, lendo a quantidade */
+        function buyFromDetail(productId) {
+            const quantity = detailQuantity; // Lê da variável global
+            
+            addToCart(productId, quantity);
+            
+            // Reseta a quantidade na página de detalhes para 1
+            detailQuantity = 1;
+            const qtySpan = document.getElementById('detail-qty');
+            if(qtySpan) qtySpan.innerText = '1';
+        }
+
+
+        /** Adiciona um item ao carrinho 
+         * ATUALIZADO: para aceitar 'quantity'
+        */
+        function addToCart(productId, quantity = 1) { // Default 1 para chamadas antigas
             const product = products.find(p => p.id === productId);
             if (!product) return;
 
             const existingItem = cart.find(item => item.id === productId);
 
             if (existingItem) {
-                existingItem.quantity++;
+                // ATUALIZADO:
+                existingItem.quantity += quantity;
             } else {
-                cart.push({ ...product, quantity: 1 });
+                // ATUALIZADO:
+                cart.push({ ...product, quantity: quantity });
             }
 
             updateCartUI();
             
             // ATUALIZAÇÃO: Chama a notificação toast
-            showToast(`${product.name} foi adicionado!`);
+            // ATUALIZADO: para mostrar a quantidade
+            showToast(`${product.name} (x${quantity}) foi adicionado!`);
             
-            console.log("Item adicionado:", product.name);
+            console.log(`Item adicionado: ${product.name}, Quantidade: ${quantity}`);
         }
 
         /** Atualiza o contador do carrinho e renderiza o conteúdo */
@@ -1842,6 +2302,7 @@
                                     <span class="text-sm text-gray-500 line-through">${formatCurrency(product.price)}</span>
                                 </div>
                             </div>
+                            <!-- ATUALIZADO: Chama addToCart com 1 item (default) -->
                             <button onclick="addToCart(${product.id}); closeOffersModal();" class="bg-red-700 hover:bg-red-800 text-white font-semibold py-1.5 px-3 rounded-md text-sm">
                                 Adicionar
                             </button>
@@ -1955,6 +2416,21 @@
                 });
             }
 
+            // --- NOVO: Lógica do Botão Voltar ao Topo ---
+            const backToTopBtn = document.getElementById('back-to-top-btn');
+            
+            if (backToTopBtn) {
+                window.addEventListener('scroll', () => {
+                    // Mostra o botão após rolar 300px
+                    if (window.scrollY > 300) {
+                        backToTopBtn.classList.add('show');
+                    } else {
+                        backToTopBtn.classList.remove('show');
+                    }
+                });
+            }
+            // --- Fim da Lógica do Botão ---
+
             // Define a página inicial
             showPage('page-home');
             
@@ -1964,6 +2440,14 @@
     </script>
 
     <!-- REMOÇÃO: O botão flutuante global foi removido, pois agora está em cada card. -->
+
+    <!-- NOVO: Botão Voltar ao Topo -->
+    <button id="back-to-top-btn" 
+            onclick="scrollToTop()"
+            class="fixed bottom-6 right-6 z-50 bg-red-700 hover:bg-red-800 text-white p-3 rounded-full shadow-lg transition-all duration-300 opacity-0 pointer-events-none translate-y-4"
+            title="Voltar ao topo">
+        <ion-icon name="arrow-up-outline" class="h-6 w-6"></ion-icon>
+    </button>
 
 </body>
 </html>
